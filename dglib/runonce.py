@@ -7,6 +7,7 @@ import win32event
 
 g_hMutex = None	# 这个mutex不可是局部变量，否则在函数返回时会被释放，起不到互斥作用。
 
+
 def runonce(mutex_name, register_msg="", exit=False):
 	'''
 	使用互斥量保证只运行一次，名称前加“Global\”为全局互斥量可用于多用户环境。
@@ -17,7 +18,7 @@ def runonce(mutex_name, register_msg="", exit=False):
 	if register_msg:
 		# 如果直接import qt_utils2 会引入对PyQt的依赖，
 		# 造成其他import runonce的程序在py2exe打包的时候体积增大
-		qt_utils2 = __import__("qt_utils2")
+		qt_utils2 = __import__("dglib.qt.qt_utils2")
 		qt_utils2.UM_SHOW = win32api.RegisterWindowMessage(register_msg)
 
 	g_hMutex = win32event.CreateMutex(None, 0, mutex_name)
