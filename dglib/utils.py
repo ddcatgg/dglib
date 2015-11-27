@@ -7,7 +7,7 @@ import json
 import Queue
 import pickle
 
-import ordered_dict
+from basis import ordered_dict
 
 __all__ = ['LockableDict', 'DictObj', 'OrderedDictObj', 'RepeatableTimer', 'QueueEx',
 	'format_frame', 'str2hex', 'lst2hex', 'mapord', 'mapchr', 'isoformat_date',

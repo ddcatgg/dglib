@@ -1,4 +1,4 @@
-# -*- coding: gbk -*-
+# -*- coding: utf-8 -*-
 from __future__ import with_statement
 import time
 import ctypes
@@ -6,7 +6,8 @@ import Queue
 import threading
 import traceback
 import weakref
-import weakmethod	# È¡×Ô PyPubSub v3.2 µÄ pubsub.core.weakmethod
+from basis import weakmethod	# å–è‡ª PyPubSub v3.2 çš„ pubsub.core.weakmethod
+
 
 class SafeList(object):
 	def __init__(self, init_list=None, lock=None):
@@ -76,7 +77,7 @@ class SafeList(object):
 class QueueEx(Queue.Queue):
 	def __init__(self, maxsize=0):
 		self.maxsize = maxsize
-		# Queue.Queue²»ÊÇ¼Ì³Ğ×Ôobject£¬ÎŞ·¨Ê¹ÓÃsuper()¡£
+		# Queue.Queueä¸æ˜¯ç»§æ‰¿è‡ªobjectï¼Œæ— æ³•ä½¿ç”¨super()ã€‚
 		Queue.Queue.__init__(self, maxsize)
 
 	def get_nowait(self):
@@ -98,7 +99,7 @@ class QueueEx(Queue.Queue):
 			pass
 
 	def getall(self, limit=0):
-		# ĞèĞ¡ĞÄ£¬Èç¹û·ÅµÃ±ÈÄÃµÃ»¹¿ì»áËÀÑ­»·¡£
+		# éœ€å°å¿ƒï¼Œå¦‚æœæ”¾å¾—æ¯”æ‹¿å¾—è¿˜å¿«ä¼šæ­»å¾ªç¯ã€‚
 		result = []
 		while True:
 			ret, val = self.get_nowait()
@@ -164,7 +165,7 @@ class Property(object):
 		elif name in self.__dict__:
 			return self.__dict__[name]
 
-		raise AttributeError("'%s' object has no attribute '%s'" % \
+		raise AttributeError("'%s' object has no attribute '%s'" %
 			(self.__class__.__name__, name))
 
 	def __setattr__(self, name, value):
@@ -178,11 +179,11 @@ class Property(object):
 					notify_event(self, old_value, value)
 				if self.changed:
 					self.changed(self, name, old_value, value)
-				# µ±ÊôĞÔ×÷ÎªÁĞ±íÖĞµÄÒ»¸öÔªËØÊ±£¬ËŞÖ÷³ÌĞò¿ÉÄÜ»áÔÚÊÂ¼ş´¦ÀíÖĞ¶ÁÈ¡Õâ¸öÁĞ±íÖĞµÄ
-				# ÆäËûÏî£¬¶øÓë´ËÍ¬Ê±ÆäËûÏî¿ÉÄÜÕıÔÚ»òÒÑ¾­±»ÆäËûÏß³Ì¸ü¸Ä£¬Ôì³ÉÔÚÊÂ¼ş´¦ÀíÊ±Õâ
-				# ¸öÁĞ±íµÄÕûÌåÊı¾İÎŞ·¨´¦ÓÚÎÈ¶¨×´Ì¬¡£½â¾ö°ì·¨ÊÇ£¬¶ÔÕâ¸öÁĞ±íµÄËùÓĞProperty
-				# ¶ÔÏóÖ¸¶¨Í¬Ò»¸öËø£¬ÕâÑùÔÚÒ»¸öÔªËØ±»¸ü¸Ä²¢½øÈëÊÂ¼şÊ±£¬ÆäËûÏß³Ì¶ÔÆäËûÔªËØµÄ
-				# ²Ù×÷¾Í±»¹ÒÆğ£¬Òò´ËÄÜ¹»ÕıÈ·µØ¶ÁÈ¡Õû¸öÁĞ±íµÄÔªËØ¡£
+				# å½“å±æ€§ä½œä¸ºåˆ—è¡¨ä¸­çš„ä¸€ä¸ªå…ƒç´ æ—¶ï¼Œå®¿ä¸»ç¨‹åºå¯èƒ½ä¼šåœ¨äº‹ä»¶å¤„ç†ä¸­è¯»å–è¿™ä¸ªåˆ—è¡¨ä¸­çš„
+				# å…¶ä»–é¡¹ï¼Œè€Œä¸æ­¤åŒæ—¶å…¶ä»–é¡¹å¯èƒ½æ­£åœ¨æˆ–å·²ç»è¢«å…¶ä»–çº¿ç¨‹æ›´æ”¹ï¼Œé€ æˆåœ¨äº‹ä»¶å¤„ç†æ—¶è¿™
+				# ä¸ªåˆ—è¡¨çš„æ•´ä½“æ•°æ®æ— æ³•å¤„äºç¨³å®šçŠ¶æ€ã€‚è§£å†³åŠæ³•æ˜¯ï¼Œå¯¹è¿™ä¸ªåˆ—è¡¨çš„æ‰€æœ‰Property
+				# å¯¹è±¡æŒ‡å®šåŒä¸€ä¸ªé”ï¼Œè¿™æ ·åœ¨ä¸€ä¸ªå…ƒç´ è¢«æ›´æ”¹å¹¶è¿›å…¥äº‹ä»¶æ—¶ï¼Œå…¶ä»–çº¿ç¨‹å¯¹å…¶ä»–å…ƒç´ çš„
+				# æ“ä½œå°±è¢«æŒ‚èµ·ï¼Œå› æ­¤èƒ½å¤Ÿæ­£ç¡®åœ°è¯»å–æ•´ä¸ªåˆ—è¡¨çš„å…ƒç´ ã€‚
 				self.__dict__["_%s_lock" % name].release()
 		else:
 			self.__dict__[name] = value
@@ -193,7 +194,7 @@ class Property(object):
 
 class Event(object):
 	def __init__(self, parent=None, name=""):
-		# Ê¹ÓÃÁËweakrefºÍWeakMethod·ÀÖ¹Ñ­»·ÒıÓÃ
+		# ä½¿ç”¨äº†weakrefå’ŒWeakMethodé˜²æ­¢å¾ªç¯å¼•ç”¨
 		self.ref_parent = None if parent is None else weakref.ref(parent)
 		self.name = name
 		self.ref_listeners = []
@@ -256,7 +257,7 @@ class Property2(object):
 		elif name in self.__dict__:
 			return self.__dict__[name]
 
-		raise AttributeError("'%s' object has no attribute '%s'" % \
+		raise AttributeError("'%s' object has no attribute '%s'" %
 			(self.__class__.__name__, name))
 
 	def __setattr__(self, name, value):
@@ -268,11 +269,11 @@ class Property2(object):
 					evt_notifier = self.__dict__["%s_changed" % name]
 					evt_notifier.dispatch(old_value, value)
 					self.changed.dispatch(name, old_value, value)
-					# µ±ÊôĞÔ×÷ÎªÁĞ±íÖĞµÄÒ»¸öÔªËØÊ±£¬ËŞÖ÷³ÌĞò¿ÉÄÜ»áÔÚÊÂ¼ş´¦ÀíÖĞ¶ÁÈ¡Õâ¸öÁĞ±íÖĞµÄ
-					# ÆäËûÏî£¬¶øÓë´ËÍ¬Ê±ÆäËûÏî¿ÉÄÜÕıÔÚ»òÒÑ¾­±»ÆäËûÏß³Ì¸ü¸Ä£¬Ôì³ÉÔÚÊÂ¼ş´¦ÀíÊ±Õâ
-					# ¸öÁĞ±íµÄÕûÌåÊı¾İÎŞ·¨´¦ÓÚÎÈ¶¨×´Ì¬¡£½â¾ö°ì·¨ÊÇ£¬¶ÔÕâ¸öÁĞ±íµÄËùÓĞProperty
-					# ¶ÔÏóÖ¸¶¨Í¬Ò»¸öËø£¬ÕâÑùÔÚÒ»¸öÔªËØ±»¸ü¸Ä²¢½øÈëÊÂ¼şÊ±£¬ÆäËûÏß³Ì¶ÔÆäËûÔªËØµÄ
-					# ²Ù×÷¾Í±»¹ÒÆğ£¬Òò´ËÄÜ¹»ÕıÈ·µØ¶ÁÈ¡Õû¸öÁĞ±íµÄÔªËØ¡£
+					# å½“å±æ€§ä½œä¸ºåˆ—è¡¨ä¸­çš„ä¸€ä¸ªå…ƒç´ æ—¶ï¼Œå®¿ä¸»ç¨‹åºå¯èƒ½ä¼šåœ¨äº‹ä»¶å¤„ç†ä¸­è¯»å–è¿™ä¸ªåˆ—è¡¨ä¸­çš„
+					# å…¶ä»–é¡¹ï¼Œè€Œä¸æ­¤åŒæ—¶å…¶ä»–é¡¹å¯èƒ½æ­£åœ¨æˆ–å·²ç»è¢«å…¶ä»–çº¿ç¨‹æ›´æ”¹ï¼Œé€ æˆåœ¨äº‹ä»¶å¤„ç†æ—¶è¿™
+					# ä¸ªåˆ—è¡¨çš„æ•´ä½“æ•°æ®æ— æ³•å¤„äºç¨³å®šçŠ¶æ€ã€‚è§£å†³åŠæ³•æ˜¯ï¼Œå¯¹è¿™ä¸ªåˆ—è¡¨çš„æ‰€æœ‰Property
+					# å¯¹è±¡æŒ‡å®šåŒä¸€ä¸ªé”ï¼Œè¿™æ ·åœ¨ä¸€ä¸ªå…ƒç´ è¢«æ›´æ”¹å¹¶è¿›å…¥äº‹ä»¶æ—¶ï¼Œå…¶ä»–çº¿ç¨‹å¯¹å…¶ä»–å…ƒç´ çš„
+					# æ“ä½œå°±è¢«æŒ‚èµ·ï¼Œå› æ­¤èƒ½å¤Ÿæ­£ç¡®åœ°è¯»å–æ•´ä¸ªåˆ—è¡¨çš„å…ƒç´ ã€‚
 		else:
 			self.__dict__[name] = value
 
@@ -312,7 +313,7 @@ class Strand(object):
 	def dispatch(self):
 		item = self._queue_work.get()
 		method, result, args, kwargs = item
-		if method != None:
+		if method is not None:
 			result.value = method(*args, **kwargs)
 			result.event.set()
 			return True
@@ -384,6 +385,7 @@ def defercall_func(results, *args, **kwargs):
 	t = int(time.time())
 	results.append([t, args, kwargs])
 
+
 def test_defercall():
 	t = int(time.time())
 	results = []
@@ -402,19 +404,21 @@ def test_defercall():
 	assert args2 == (4, 5)
 	assert kwargs2 == {"foo": 6}
 
+
 def test_strand():
-	import time
 	strand = Strand()
 	result = strand.synchronize(time.sleep, 1)
 	strand.start()
 	assert result.wait(2) == True
-	assert result.value == None
+	assert result.value is None
+
 
 def test():
 	import unittest
 	suite = unittest.TestSuite(map(unittest.FunctionTestCase, (test_strand, test_defercall)))
 	runner = unittest.TextTestRunner()
 	runner.run(suite)
+
 
 if __name__ == "__main__":
 	test()
