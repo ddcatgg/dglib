@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
+import glob
 from distutils.core import setup
 
 
 setup(
 	name='dglib',
-	packages=['dglib'],
+	packages=['dglib'] + glob.glob('dglib/*/'),
 	version='0.1',
 	description='Daemon glance lib',
 	author='DDGG',
