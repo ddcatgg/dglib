@@ -1,0 +1,140 @@
+QEvent::None	0	Not an event.
+QEvent::AccessibilityDescription	130	Used to query accessibility description texts (QAccessibleEvent).
+QEvent::AccessibilityHelp	119	Used to query accessibility help texts (QAccessibleEvent).
+QEvent::AccessibilityPrepare	86	Accessibility information is requested.
+QEvent::ActionAdded	114	A new action has been added (QActionEvent).
+QEvent::ActionChanged	113	An action has been changed (QActionEvent).
+QEvent::ActionRemoved	115	An action has been removed (QActionEvent).
+QEvent::ActivationChange	99	A widget's top-level window activation state has changed.
+QEvent::ApplicationActivate	121	The application has been made available to the user.
+QEvent::ApplicationActivated	ApplicationActivate	This enum has been deprecated. Use ApplicationActivate instead.
+QEvent::ApplicationDeactivate	122	The application has been suspended, and is unavailable to the user.
+QEvent::ApplicationFontChange	36	The default application font has changed.
+QEvent::ApplicationLayoutDirectionChange	37	The default application layout direction has changed.
+QEvent::ApplicationPaletteChange	38	The default application palette has changed.
+QEvent::ApplicationWindowIconChange	35	The application's icon has changed.
+QEvent::ChildAdded	68	An object gets a child (QChildEvent).
+QEvent::ChildInserted	70	An object gets a child (QChildEvent). Qt3Support only, use ChildAdded instead.
+QEvent::ChildPolished	69	A widget child gets polished (QChildEvent).
+QEvent::ChildRemoved	71	An object loses a child (QChildEvent).
+QEvent::Clipboard	40	The clipboard contents have changed (QClipboardEvent).
+QEvent::Close	19	Widget was closed (QCloseEvent).
+QEvent::CloseSoftwareInputPanel	200	A widget wants to close the software input panel (SIP).
+QEvent::ContentsRectChange	178	The margins of the widget's content rect changed.
+QEvent::ContextMenu	82	Context popup menu (QContextMenuEvent).
+QEvent::CursorChange	183	The widget's cursor has changed.
+QEvent::DeferredDelete	52	The object will be deleted after it has cleaned up.
+QEvent::DragEnter	60	The cursor enters a widget during a drag and drop operation (QDragEnterEvent).
+QEvent::DragLeave	62	The cursor leaves a widget during a drag and drop operation (QDragLeaveEvent).
+QEvent::DragMove	61	A drag and drop operation is in progress (QDragMoveEvent).
+QEvent::Drop	63	A drag and drop operation is completed (QDropEvent).
+QEvent::EnabledChange	98	Widget's enabled state has changed.
+QEvent::Enter	10	Mouse enters widget's boundaries.
+QEvent::EnterEditFocus	150	An editor widget gains focus for editing.
+QEvent::EnterWhatsThisMode	124	Send to toplevel widgets when the application enters "What's This?" mode.
+QEvent::FileOpen	116	File open request (QFileOpenEvent).
+QEvent::FocusIn	8	Widget gains keyboard focus (QFocusEvent).
+QEvent::FocusOut	9	Widget loses keyboard focus (QFocusEvent).
+QEvent::FontChange	97	Widget's font has changed.
+QEvent::GrabKeyboard	188	Item gains keyboard grab (QGraphicsItem only).
+QEvent::GrabMouse	186	Item gains mouse grab (QGraphicsItem only).
+QEvent::GraphicsSceneContextMenu	159	Context popup menu over a graphics scene (QGraphicsSceneContextMenuEvent).
+QEvent::GraphicsSceneDragEnter	164	The cursor enters a graphics scene during a drag and drop operation (QGraphicsSceneDragDropEvent).
+QEvent::GraphicsSceneDragLeave	166	The cursor leaves a graphics scene during a drag and drop operation (QGraphicsSceneDragDropEvent).
+QEvent::GraphicsSceneDragMove	165	A drag and drop operation is in progress over a scene (QGraphicsSceneDragDropEvent).
+QEvent::GraphicsSceneDrop	167	A drag and drop operation is completed over a scene (QGraphicsSceneDragDropEvent).
+QEvent::GraphicsSceneHelp	163	The user requests help for a graphics scene (QHelpEvent).
+QEvent::GraphicsSceneHoverEnter	160	The mouse cursor enters a hover item in a graphics scene (QGraphicsSceneHoverEvent).
+QEvent::GraphicsSceneHoverLeave	162	The mouse cursor leaves a hover item in a graphics scene (QGraphicsSceneHoverEvent).
+QEvent::GraphicsSceneHoverMove	161	The mouse cursor moves inside a hover item in a graphics scene (QGraphicsSceneHoverEvent).
+QEvent::GraphicsSceneMouseDoubleClick	158	Mouse press again (double click) in a graphics scene (QGraphicsSceneMouseEvent).
+QEvent::GraphicsSceneMouseMove	155	Move mouse in a graphics scene (QGraphicsSceneMouseEvent).
+QEvent::GraphicsSceneMousePress	156	Mouse press in a graphics scene (QGraphicsSceneMouseEvent).
+QEvent::GraphicsSceneMouseRelease	157	Mouse release in a graphics scene (QGraphicsSceneMouseEvent).
+QEvent::GraphicsSceneMove	182	Widget was moved (QGraphicsSceneMoveEvent).
+QEvent::GraphicsSceneResize	181	Widget was resized (QGraphicsSceneResizeEvent).
+QEvent::GraphicsSceneWheel	168	Mouse wheel rolled in a graphics scene (QGraphicsSceneWheelEvent).
+QEvent::Hide	18	Widget was hidden (QHideEvent).
+QEvent::HideToParent	27	A child widget has been hidden.
+QEvent::HoverEnter	127	The mouse cursor enters a hover widget (QHoverEvent).
+QEvent::HoverLeave	128	The mouse cursor leaves a hover widget (QHoverEvent).
+QEvent::HoverMove	129	The mouse cursor moves inside a hover widget (QHoverEvent).
+QEvent::IconDrag	96	The main icon of a window has been dragged away (QIconDragEvent).
+QEvent::IconTextChange	101	Widget's icon text has been changed.
+QEvent::InputMethod	83	An input method is being used (QInputMethodEvent).
+QEvent::KeyPress	6	Key press (QKeyEvent).
+QEvent::KeyRelease	7	Key release (QKeyEvent).
+QEvent::LanguageChange	89	The application translation changed.
+QEvent::LayoutDirectionChange	90	The direction of layouts changed.
+QEvent::LayoutRequest	76	Widget layout needs to be redone.
+QEvent::Leave	11	Mouse leaves widget's boundaries.
+QEvent::LeaveEditFocus	151	An editor widget loses focus for editing.
+QEvent::LeaveWhatsThisMode	125	Send to toplevel widgets when the application leaves "What's This?" mode.
+QEvent::LocaleChange	88	The system locale has changed.
+QEvent::NonClientAreaMouseButtonDblClick	176	A mouse double click occurred outside the client area.
+QEvent::NonClientAreaMouseButtonPress	174	A mouse button press occurred outside the client area.
+QEvent::NonClientAreaMouseButtonRelease	175	A mouse button release occurred outside the client area.
+QEvent::NonClientAreaMouseMove	173	A mouse move occurred outside the client area.
+QEvent::MacSizeChange	177	The user changed his widget sizes (Mac OS X only).
+QEvent::MenubarUpdated	153	The window's menu bar has been updated.
+QEvent::MetaCall	43	An asynchronous method invocation via QMetaObject::invokeMethod().
+QEvent::ModifiedChange	102	Widgets modification state has been changed.
+QEvent::MouseButtonDblClick	4	Mouse press again (QMouseEvent).
+QEvent::MouseButtonPress	2	Mouse press (QMouseEvent).
+QEvent::MouseButtonRelease	3	Mouse release (QMouseEvent).
+QEvent::MouseMove	5	Mouse move (QMouseEvent).
+QEvent::MouseTrackingChange	109	The mouse tracking state has changed.
+QEvent::Move	13	Widget's position changed (QMoveEvent).
+QEvent::Paint	12	Screen update necessary (QPaintEvent).
+QEvent::PaletteChange	39	Palette of the widget changed.
+QEvent::ParentAboutToChange	131	The widget parent is about to change.
+QEvent::ParentChange	21	The widget parent has changed.
+QEvent::PlatformPanel	212	A platform specific panel has been requested.
+QEvent::Polish	75	The widget is polished.
+QEvent::PolishRequest	74	The widget should be polished.
+QEvent::QueryWhatsThis	123	The widget should accept the event if it has "What's This?" help.
+QEvent::RequestSoftwareInputPanel	199	A widget wants to open a software input panel (SIP).
+QEvent::Resize	14	Widget's size changed (QResizeEvent).
+QEvent::Shortcut	117	Key press in child for shortcut key handling (QShortcutEvent).
+QEvent::ShortcutOverride	51	Key press in child, for overriding shortcut key handling (QKeyEvent).
+QEvent::Show	17	Widget was shown on screen (QShowEvent).
+QEvent::ShowToParent	26	A child widget has been shown.
+QEvent::SockAct	50	Socket activated, used to implement QSocketNotifier.
+QEvent::StateMachineSignal	192	A signal delivered to a state machine (QStateMachine::SignalEvent).
+QEvent::StateMachineWrapped	193	The event is a wrapper for, i.e., contains, another event (QStateMachine::WrappedEvent).
+QEvent::StatusTip	112	A status tip is requested (QStatusTipEvent).
+QEvent::StyleChange	100	Widget's style has been changed.
+QEvent::TabletMove	87	Wacom tablet move (QTabletEvent).
+QEvent::TabletPress	92	Wacom tablet press (QTabletEvent).
+QEvent::TabletRelease	93	Wacom tablet release (QTabletEvent).
+QEvent::OkRequest	94	Ok button in decoration pressed. Supported only for Windows CE.
+QEvent::TabletEnterProximity	171	Wacom tablet enter proximity event (QTabletEvent), sent to QApplication.
+QEvent::TabletLeaveProximity	172	Wacom tablet leave proximity event (QTabletEvent), sent to QApplication.
+QEvent::Timer	1	Regular timer events (QTimerEvent).
+QEvent::ToolBarChange	120	The toolbar button is toggled on Mac OS X.
+QEvent::ToolTip	110	A tooltip was requested (QHelpEvent).
+QEvent::ToolTipChange	184	The widget's tooltip has changed.
+QEvent::UngrabKeyboard	189	Item loses keyboard grab (QGraphicsItem only).
+QEvent::UngrabMouse	187	Item loses mouse grab (QGraphicsItem only).
+QEvent::UpdateLater	78	The widget should be queued to be repainted at a later time.
+QEvent::UpdateRequest	77	The widget should be repainted.
+QEvent::WhatsThis	111	The widget should reveal "What's This?" help (QHelpEvent).
+QEvent::WhatsThisClicked	118	A link in a widget's "What's This?" help was clicked.
+QEvent::Wheel	31	Mouse wheel rolled (QWheelEvent).
+QEvent::WinEventAct	132	A Windows-specific activation event has occurred.
+QEvent::WindowActivate	24	Window was activated.
+QEvent::WindowBlocked	103	The window is blocked by a modal dialog.
+QEvent::WindowDeactivate	25	Window was deactivated.
+QEvent::WindowIconChange	34	The window's icon has changed.
+QEvent::WindowStateChange	105	The window's state (minimized, maximized or full-screen) has changed (QWindowStateChangeEvent).
+QEvent::WindowTitleChange	33	The window title has changed.
+QEvent::WindowUnblocked	104	The window is unblocked after a modal dialog exited.
+QEvent::ZOrderChange	126	The widget's z-order has changed. This event is never sent to top level windows.
+QEvent::KeyboardLayoutChange	169	The keyboard layout has changed.
+QEvent::DynamicPropertyChange	170	A dynamic property was added, changed or removed from the object.
+QEvent::TouchBegin	194	Beginning of a sequence of touch-screen and/or track-pad events (QTouchEvent)
+QEvent::TouchUpdate	195	Touch-screen event (QTouchEvent)
+QEvent::TouchEnd	196	End of touch-event sequence (QTouchEvent)
+QEvent::WinIdChange	203	The window system identifer for this native widget has changed
+QEvent::Gesture	198	A gesture was triggered (QGestureEvent)
+QEvent::GestureOverride	202	A gesture override was triggered (QGestureEvent)
