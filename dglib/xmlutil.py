@@ -1,6 +1,7 @@
-# -*- coding: gbk -*-
+# -*- coding: utf-8 -*-
 import re
 import xml.etree.cElementTree as ET
+
 
 class XmlStr(str):
 	def __new__(cls, init_str, encoding="gbk"):
@@ -26,11 +27,11 @@ class XmlElem(object):
 
 	def __contains__(self, name):
 		elem = self._rootelem.find(name)
-		return elem != None
+		return elem is not None
 
 	def get(self, name, val=None):
 		elem = self._rootelem.find(name)
-		if elem != None:
+		if elem is not None:
 			if elem.text:
 				val = elem.text.encode("gbk")
 				if callable(self._int_elems):
@@ -57,9 +58,10 @@ def get_xmlhead(text):
 			head = m.group()
 	return head
 
+
 def get_xmlencoding(text, default):
 	'''
-	×Ô¶¯Ê¶±ğxmlÎÄ±¾µÄ±àÂë£¬Èç¹ûÊ¶±ğ²»³ö¾Í·µ»ØdefaultÖ¸¶¨µÄ±àÂë¡£
+	è‡ªåŠ¨è¯†åˆ«xmlæ–‡æœ¬çš„ç¼–ç ï¼Œå¦‚æœè¯†åˆ«ä¸å‡ºå°±è¿”å›defaultæŒ‡å®šçš„ç¼–ç ã€‚
 	'''
 	encoding = default
 	head = get_xmlhead(text)
@@ -69,6 +71,7 @@ def get_xmlencoding(text, default):
 			encoding = m1.group(2)
 	return encoding.lower()
 
+
 def drop_xmlidentifier(text):
 	if text.startswith("<?xml"):
 		m = re.match("<\?xml (.*?)\?>", text)
@@ -76,17 +79,18 @@ def drop_xmlidentifier(text):
 			text = m.string[m.end(0):]
 	return text
 
+
 def xmlelem_from_text(text, encoding="gbk"):
 	'''
-	´ÓxmlÎÄ±¾Éú³Éxml¶ÔÏó
-	¿ÉÒÔ×Ô¶¯Ê¶±ğxmlÖĞµÄencoding£¬¶øÇÒ²»¹Ü°ü²»°üÀ¨<?xml ...?>Í·¶¼ÄÜÕıÈ·´¦Àí¡£
-	µ±xmlÖĞ²»°üº¬encodingÊ±£¬Ä¬ÈÏÎªgbk¡£
+	ä»xmlæ–‡æœ¬ç”Ÿæˆxmlå¯¹è±¡
+	å¯ä»¥è‡ªåŠ¨è¯†åˆ«xmlä¸­çš„encodingï¼Œè€Œä¸”ä¸ç®¡åŒ…ä¸åŒ…æ‹¬<?xml ...?>å¤´éƒ½èƒ½æ­£ç¡®å¤„ç†ã€‚
+	å½“xmlä¸­ä¸åŒ…å«encodingæ—¶ï¼Œé»˜è®¤ä¸ºgbkã€‚
 	'''
 	head = get_xmlhead(text)
 	encoding = get_xmlencoding(head, default=encoding)
 	if encoding not in ["utf8", "utf-8"]:
-		if encoding == "gb2312":	# ÓĞµÄxmlÎÄ¼şËäÈ»±ê×¢ÊÇgb2312±àÂë
-			encoding = "gb18030"	# µ«È´´æÔÚÎŞ·¨½âÂëµÄ×Ö·ûĞèÒªgbkÉõÖÁgb18030½âÂë
+		if encoding == "gb2312":	# æœ‰çš„xmlæ–‡ä»¶è™½ç„¶æ ‡æ³¨æ˜¯gb2312ç¼–ç 
+			encoding = "gb18030"	# ä½†å´å­˜åœ¨æ— æ³•è§£ç çš„å­—ç¬¦éœ€è¦gbkç”šè‡³gb18030è§£ç 
 		text = text[len(head):]
 		text = unicode(text, encoding).encode("utf-8")
 		head = ""
@@ -95,14 +99,15 @@ def xmlelem_from_text(text, encoding="gbk"):
 		xml = "".join((head, text))
 	else:
 		xml = text
-	# ET.XML() Ïàµ±ÓÚET.fromstring()£¬Ö»ÄÜ½ÓÊÕUTF-8±àÂëµÄÎÄ±¾¡£
-	# ×¢ÒâET.XML½âÎöÕâ¸ö£º'<?xml version="1.0" encoding="gbk" ?><ChannelName>&#x04;</ChannelName>'
-	# »á±¨´í£ºSyntaxError: reference to invalid character number: line 1, column 51
+	# ET.XML() ç›¸å½“äºET.fromstring()ï¼Œåªèƒ½æ¥æ”¶UTF-8ç¼–ç çš„æ–‡æœ¬ã€‚
+	# æ³¨æ„ET.XMLè§£æè¿™ä¸ªï¼š'<?xml version="1.0" encoding="gbk" ?><ChannelName>&#x04;</ChannelName>'
+	# ä¼šæŠ¥é”™ï¼šSyntaxError: reference to invalid character number: line 1, column 51
 	return ET.XML(xml)
+
 
 def clone(elem):
 	'''
-	²Î¿¼×Ôhttp://www.velocityreviews.com/forums/t668383-elementtree-and-clone-element-toot.html
+	å‚è€ƒè‡ªhttp://www.velocityreviews.com/forums/t668383-elementtree-and-clone-element-toot.html
 	'''
 	new_elem = elem.makeelement(elem.tag, elem.attrib)
 	new_elem.text = elem.text
@@ -110,14 +115,16 @@ def clone(elem):
 		new_elem.append(clone(child))
 	return new_elem
 
+
 def get_parent_elem(rootelem, elem):
 	"""
-	 »ñµÃÔªËØµÄ¸¸ÔªËØ
-	 ²Î¼ûhttp://stackoverflow.com/questions/2170610/access-elementtree-node-parent-node
+	 è·å¾—å…ƒç´ çš„çˆ¶å…ƒç´ 
+	 å‚è§http://stackoverflow.com/questions/2170610/access-elementtree-node-parent-node
 	"""
 	parent_map = dict((c, p) for p in rootelem.getiterator() for c in p)
 	parent_elem = parent_map.get(elem)
 	return parent_elem
+
 
 def droptags(text):
 	text = text.replace("&lt;", "<")
@@ -126,10 +133,11 @@ def droptags(text):
 	text = re.sub("<.*?>", "", text)
 	return text
 
+
 def pretty_indent(elem, space="\t", level=0):
 	'''
-	ÓÃÓÚÃÀ»¯Êä³ö
-	Õª×Ôhttp://effbot.org/zone/element-lib.htm#prettyprint
+	ç”¨äºç¾åŒ–è¾“å‡º
+	æ‘˜è‡ªhttp://effbot.org/zone/element-lib.htm#prettyprint
 	'''
 	i = "\n" + level * space
 	if len(elem):
