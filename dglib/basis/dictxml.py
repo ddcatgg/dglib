@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import xml.etree.cElementTree as ET
 
 
 def attr_gbk(elem, name):
