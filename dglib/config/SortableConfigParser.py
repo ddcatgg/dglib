@@ -1,5 +1,6 @@
 import ConfigParser
 
+
 class SortableConfigParser(ConfigParser.ConfigParser):
 	def __init__(self, *args, **kwargs):
 		ConfigParser.ConfigParser.__init__(self, *args, **kwargs)
@@ -27,7 +28,7 @@ class SortableConfigParser(ConfigParser.ConfigParser):
 			self.set(section, option, str(default))
 		return self.getfloat(section, option)
 
-	def getbooleandef(self, section, option):
+	def getbooleandef(self, section, option, default):
 		if not self.has_option(section, option):
 			if not self.has_section(section):
 				self.add_section(section)
@@ -50,8 +51,8 @@ class SortableConfigParser(ConfigParser.ConfigParser):
 		try:
 			d.update(self._sections[section])
 		except KeyError:
-			if section != DEFAULTSECT:
-				raise NoSectionError(section)
+			if section != ConfigParser.DEFAULTSECT:
+				raise ConfigParser.NoSectionError(section)
 		# Update with the entry specific variables
 		if vars:
 			for key, value in vars.items():
@@ -77,7 +78,7 @@ class SortableConfigParser(ConfigParser.ConfigParser):
 	def write(self, fp):
 		"""Write an .ini-format representation of the configuration state."""
 		if self._defaults:
-			fp.write("[%s]\n" % DEFAULTSECT)
+			fp.write("[%s]\n" % ConfigParser.DEFAULTSECT)
 			for (key, value) in self._defaults.items():
 				fp.write("%s = %s\n" % (key, str(value).replace('\n', '\n\t')))
 			fp.write("\n")
