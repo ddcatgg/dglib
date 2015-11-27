@@ -1,6 +1,6 @@
+# http://blog.csdn.net/ghostfromheaven/article/details/7671853
 import threading
 
-# http://blog.csdn.net/ghostfromheaven/article/details/7671853
 
 class Singleton(object):
 	"""
@@ -50,6 +50,7 @@ def singleton(cls):
 	return _singleton
 '''
 
+
 def singleton(cls):
 	"""
 	usage:
@@ -83,6 +84,7 @@ def test():
 	my2 = MyClass(3, 4, 5)
 	assert(my1 != my2)
 	assert(MyClass.get_instance(11, 22) == MyClass.get_instance())
+
 
 if __name__ == '__main__':
 	test()
