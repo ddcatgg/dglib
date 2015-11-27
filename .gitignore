@@ -1,3 +1,6 @@
 /.project
 /.pydevproject
 /MANIFEST
+/build
+/dglib.egg-info
+/dist
