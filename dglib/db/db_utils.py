@@ -11,8 +11,8 @@ class MySql(object):
 	def __init__(self, host, port, uid, pwd, db, charset="gbk"):
 		self.host = host
 		self.port = port
-		self.uid = uid;
-		self.pwd = pwd;
+		self.uid = uid
+		self.pwd = pwd
 		self.db = db
 		self.charset = charset
 		self.conn = None

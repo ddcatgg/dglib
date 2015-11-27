@@ -1,6 +1,7 @@
+from __future__ import absolute_import
 import re
 from ConfigParser import RawConfigParser, NoSectionError, NoOptionError, DEFAULTSECT
-from ordered_dict import OrderedDictCaseInsensitive
+from ..basis.ordered_dict import OrderedDictCaseInsensitive
 
 
 class IniFile(RawConfigParser):
