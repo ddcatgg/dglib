@@ -32,6 +32,18 @@ class Singleton2(type):
 		return cls._instance
 
 
+class SingletonMixin():
+	__instance = None
+	__lock = threading.RLock()
+
+	@classmethod
+	def get_instance(cls, *args, **kw):
+		with cls.__lock:
+			if not cls.__instance:
+				cls.__instance = cls(*args, **kw)
+			return cls.__instance
+
+
 '''
 def singleton(cls):
 	"""
