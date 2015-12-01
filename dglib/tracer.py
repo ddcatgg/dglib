@@ -10,7 +10,9 @@ import time
 import logging.handlers
 from utils import module_path, extractbaseext, isoformat_date, makesure_dirpathexists
 
-ENABLED = True
+__all__ = ["BlackHole", "CompositeFile", "ScreenLogger", "StreamToLogger", "NoneTracer", "Tracer", "Tracer2", "MyStreamHandler",
+		"DailyRotatingFileHandler", "Utf8DailyRotatingFileHandler", "UdpLogHandler", "get_logger", "get_logger2", "std_formatter",
+		"get_tracer", "get_nonetracer", "get_classtracer", "get_filetracer", "redirect_stdout_stderr_tologger", "nullfile"]
 
 
 class BlackHole(object):
@@ -279,6 +281,9 @@ class Tracer(object):
 					hdlr.close()
 				finally:
 					hdlr.release()
+
+
+DefaultTracer = Tracer
 
 
 class Tracer2(object):
@@ -593,11 +598,10 @@ def std_formatter():
 
 
 def get_tracer(*args, **kwargs):
-	if ENABLED:
-		_tracer = Tracer(*args, **kwargs)
-	else:
-		_tracer = NoneTracer(*args, **kwargs)
-	return _tracer
+	"""
+	可以通过将 DefaultTracer 设置为 NoneTracer 禁用 tracer。
+	"""
+	return DefaultTracer(*args, **kwargs)
 
 
 def get_nonetracer(*args, **kwargs):
@@ -648,6 +652,11 @@ def test_redirect_stdout_stderr_tologger():
 
 	print "Test to standard out"
 	raise Exception('Test to standard error')
+
+
+def nullfile():
+	import platform
+	return "/dev/null" if platform.system() == "Linux" else "nul"
 
 
 class Tester(object):
