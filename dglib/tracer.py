@@ -421,7 +421,7 @@ class DailyRotatingFileHandler(logging.handlers.BaseRotatingHandler):
 	def doRollover(self):
 		"""
 		do a rollover; in this case, a date/time stamp is appended to the filename
-		when the rollover happens.  However, you want the file_ to be named for the
+		when the rollover happens.  However, you want the file to be named for the
 		start of the interval, not the current time.  If there is a backup count,
 		then we have to get a list of matching filenames, sort them and remove
 		the one with the oldest suffix.
@@ -634,10 +634,16 @@ def get_filetracer(obj, subtitle="", logdir="", backup_count=2, name=""):
 
 def redirect_stdout_stderr_tologger():
 	logger_stdout = logging.getLogger('STDOUT')
-	sys.stdout = StreamToLogger(logger_stdout, logging.INFO)
+	stdout = CompositeFile()	# 使用CompositeFile避免与py2exe.boot_common中的sys.stdout冲突。
+	stdout.add(sys.stdout)
+	stdout.add(StreamToLogger(logger_stdout, logging.INFO))
+	sys.stdout = stdout
 
 	logger_stderr = logging.getLogger('STDERR')
-	sys.stderr = StreamToLogger(logger_stderr, logging.ERROR)
+	stderr = CompositeFile()	# 使用CompositeFile避免与py2exe.boot_common中的sys.stderr冲突。
+	stderr.add(sys.stderr)
+	stderr.add(StreamToLogger(logger_stderr, logging.ERROR))
+	sys.stderr = stderr
 
 
 def test_redirect_stdout_stderr_tologger():
