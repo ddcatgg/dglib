@@ -3,7 +3,7 @@ import time
 import xml.etree.cElementTree as ET
 from twisted.internet import reactor, protocol, task
 
-from httphandler import HttpHandler
+from handler.httphandler import HttpHandler
 from timeout_guard import TimeoutGuardMixIn
 from xmlutil import xmlelem_from_text, pretty_indent
 from thread_safe import Event
