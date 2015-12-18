@@ -7,6 +7,7 @@ import Cookie
 import gzip
 from cStringIO import StringIO
 
+
 class Fetcher(object):
 	def __init__(self, retry=0, retry_delay=5, validator=None):
 		self.retry = retry
@@ -95,10 +96,11 @@ class BaseOpener(object):
 
 class Opener(BaseOpener):
 	default_timeout = 20
+
 	def __init__(self, url, addheaders=None, postdata=None, timeout=None,
 		headers=None, cookie_jar=None):
 		BaseOpener.__init__(self, url, timeout)
-		if cookie_jar != None:
+		if cookie_jar is not None:
 			self.cookie_jar = cookie_jar
 		else:
 			self.cookie_jar = cookielib.CookieJar()
@@ -143,7 +145,7 @@ class Opener(BaseOpener):
 
 		addheaders = make_addheaders(d, "Referer User-agent".split())
 		result = cls(d["url"], addheaders, postdata, timeout, cookie_jar=cookie_jar)
-		if cookie != None:
+		if cookie is not None:
 			cookies = build_cookie(cookie, domain=d.get("Host", ""))
 			result.set_cookie(cookies)
 		return result
@@ -184,7 +186,7 @@ class Opener(BaseOpener):
 class EventletOpener(Opener):
 	def _build_opener(self):
 		from eventlet.green import urllib2
-		return urllib2.build_opener(urllib2.HTTPCookieProcessor(self.cookie_jar))
+		return urllib2.build_opener(urllib2.HTTPCookieProcessor(self.cookie_jar))	# @UndefinedVariable
 
 
 class Request(object):
@@ -241,6 +243,7 @@ def parse_request_raw(request_raw):
 
 	return result
 
+
 def parse_postdata_table(s):
 	if isinstance(s, unicode):
 		s = s.encode("utf8")
@@ -253,13 +256,15 @@ def parse_postdata_table(s):
 			result[key] = val
 	return result
 
+
 def make_addheaders(d, keys):
 	result = []
 	for key in keys:
 		val = d.get(key)
-		if val != None:
+		if val is not None:
 			result.append((key, val))
 	return result
+
 
 def set_addheaders(addheaders, key, val):
 	i = 0
@@ -270,6 +275,7 @@ def set_addheaders(addheaders, key, val):
 			addheaders.remove(header)
 			break
 	addheaders.insert(i, (key, val))
+
 
 def build_cookie(cookie, domain=""):
 	if isinstance(cookie, basestring):
@@ -302,6 +308,7 @@ def build_cookie(cookie, domain=""):
 		result.append(cookie_obj)
 	return result
 
+
 def decode_netscape_cookies(s):
 	result = {}
 	for line in s.split("\n"):
@@ -314,6 +321,7 @@ def decode_netscape_cookies(s):
 				d[k] = v
 				result[domain] = d
 	return result
+
 
 def urlopen(url, cookie, postdata=None, referer=None, user_agent=None, timeout=None, eventlet=False):
 	if eventlet:
@@ -338,4 +346,3 @@ def urlopen(url, cookie, postdata=None, referer=None, user_agent=None, timeout=N
 	if isinstance(url, basestring):	# 如果不是打开一批网址，则返回值也不是列表。
 		results = results[0]
 	return results
-

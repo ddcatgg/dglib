@@ -5,6 +5,7 @@ import ctypes
 import Queue
 import threading
 import traceback
+import inspect
 import weakref
 from basis import weakmethod	# 取自 PyPubSub v3.2 的 pubsub.core.weakmethod
 
@@ -200,7 +201,10 @@ class Event(object):
 		self.ref_listeners = []
 
 	def add_listener(self, listener):
-		ref_listener = weakmethod.WeakMethod(listener)
+		if inspect.ismethod(listener):
+			ref_listener = weakmethod.WeakMethod(listener)
+		else:
+			ref_listener = weakref.ref(listener)
 		if ref_listener not in self.ref_listeners:
 			self.ref_listeners.append(ref_listener)
 

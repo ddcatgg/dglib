@@ -6,6 +6,8 @@ import time
 import json
 import Queue
 import pickle
+import codecs
+import locale
 
 from basis import ordered_dict
 
@@ -401,9 +403,14 @@ def val(s, default=0):
 
 
 def defaultencoding():
-	import codecs
-	import locale
 	return codecs.lookup(locale.getpreferredencoding()).name
+
+
+def setdefaultencoding(encoding=None):
+	if encoding is None:
+		encoding = locale.getpreferredencoding()
+	reload(sys)
+	sys.setdefaultencoding(encoding)
 
 
 def get_fileversion(filename):
