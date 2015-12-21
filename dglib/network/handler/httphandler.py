@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import re
-from thread_safe import Event
+from ...thread_safe import Event
 
 
 class HttpPackage(object):
