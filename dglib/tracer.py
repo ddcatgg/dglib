@@ -315,9 +315,57 @@ class Tracer2(object):
 		self.info(s, **kwargs)
 
 
+class UnicodeLoggerFormatter(logging.Formatter):
+	"""
+	这个Fomatter将msg在写前统一转换为unicode，解决codecs.open打开的日志文件写有编码的str会UnicodeDecodeError的问题。
+	由于logging.conf不支持为Formatter配置自定义参数，故在日志配置文件中无法直接使用此类。
+	可直接在日志配置文件中使用此类的子类。
+	"""
+	def __init__(self, fmt=None, datefmt=None, encoding=None):
+		super(UnicodeLoggerFormatter, self).__init__(fmt, datefmt)
+		self.encoding = encoding
+
+	def format(self, record):
+		s = super(UnicodeLoggerFormatter, self).format(record)
+		if isinstance(s, str):
+			s = unicode(s, self.encoding)
+		return s
+
+
+class UnicodeFromGBKLoggerFormatter(UnicodeLoggerFormatter):
+	"""
+	日志配置文件中使用的示例：
+	[formatter_dailyFileFormatter]
+	class=tracer.UnicodeFromGBKLoggerFormatter
+	format=%(asctime)s.%(msecs)03d - [%(thread)d] - %(levelname)s - %(name)s - %(message)s
+	datefmt=%H:%M:%S
+	"""
+	def __init__(self, fmt=None, datefmt=None):
+		super(UnicodeFromGBKLoggerFormatter, self).__init__(fmt, datefmt, encoding="gbk")
+
+
+class UnicodeFromMbcsLoggerFormatter(UnicodeLoggerFormatter):
+	def __init__(self, fmt=None, datefmt=None):
+		super(UnicodeFromMbcsLoggerFormatter, self).__init__(fmt, datefmt, encoding="mbcs")
+
+
+class UnicodeFromUtf8LoggerFormatter(UnicodeLoggerFormatter):
+	def __init__(self, fmt=None, datefmt=None):
+		super(UnicodeFromUtf8LoggerFormatter, self).__init__(fmt, datefmt, encoding="utf-8")
+
+
 class MyStreamHandler(logging.Handler):
 	"""
-	因为系统自带的StreamHandler有bug，会将str类型当作unicode去encode。
+	系统自带的StreamHandler在写入前会检查msg的数据类型和stream.encoding
+	序号		数据类型		是否指定了encoding	处理方式
+	1)		unicode		是					先尝试写入unicode，失败后使用encoding编码再写。
+	2)		unicode		否					先尝试写入unicode用ascii编码后的str，失败后写入用UTF-8编码的str。
+	3)		str			-					先尝试写入str，失败后会把str当作unicode用UTF-8再次编码，会报错！
+	- logging.FileHandler._open()在指定了encoding时会使用codecs.open打开文件流，未指定时使用open打开文件流。
+	- codecs.open在指定了encoding时会固定以二进制方式打开文件，并且在write时假定数据是unicode类型（会做encode），
+		因此若传递了str就会在第3点出现异常。
+	这个类尝试解决这个问题。
+
 	A handler class which writes logging records, appropriately formatted,
 	to a stream. Note that this class does not close the stream, as
 	sys.stdout or sys.stderr may be used.
@@ -338,8 +386,12 @@ class MyStreamHandler(logging.Handler):
 		"""
 		Flushes the stream.
 		"""
-		if self.stream and hasattr(self.stream, "flush"):
-			self.stream.flush()
+		self.acquire()	# Python2.7开始增加的
+		try:
+			if self.stream and hasattr(self.stream, "flush"):
+				self.stream.flush()
+		finally:
+			self.release()
 
 	def emit(self, record):
 		"""
@@ -592,8 +644,6 @@ def get_logger2(name, handlers="sf", **kwargs):
 
 
 def std_formatter():
-	# logging.Formatter("[%(asctime)s] %(levelname)-8s: "
-	#	"[%(name)s] %(message)s", "%Y-%m-%d %a %H:%M:%S")
 	return logging.Formatter("%(asctime)s %(name)s: %(message)s", "%H:%M:%S")
 
 
