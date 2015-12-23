@@ -630,6 +630,28 @@ def dget(d, path, default=None, separator="/"):
 	return d
 
 
+def _a(u, encoding="mbcs"):
+	if isinstance(u, unicode):
+		return u.encode("mbcs")
+	elif encoding == "mbcs":
+		return u
+	else:
+		return unicode(u, encoding).encode("mbcs")
+
+
+def _u(s, encoding="mbcs"):
+	if isinstance(s, unicode):
+		return s
+	elif isinstance(s, str):
+		return unicode(s, encoding)
+	else:
+		return unicode(s)
+
+
+def _u8(s):
+	return _u(s, encoding="utf-8")
+
+
 def __test_print_():
 	print_(1234, "no-feed-line", "")
 	print_(5678, "")

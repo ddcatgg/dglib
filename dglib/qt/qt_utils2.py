@@ -1,14 +1,25 @@
 # -*- coding: gbk -*-
 from __future__ import unicode_literals
 import os
+import re
 import time
 import threading
 import win32process
 import win32con
+import functools
 from PyQt4 import QtGui, QtCore
 import sip
 
 UM_SHOW = win32con.WM_USER + 100
+
+__all__ = ['UM_SHOW', 'TrayMixIn', 'QssMixIn', 'EmitCallMixIn', 'EmitCallDecorator',
+	'ThreadingInvokeStubInMainThread', 'threadingInvokeStubInMainThread', 'callFromThread',
+	'callFromThread_wrap', 'RowHeightItemDelegateMixIn', 'HighlightFixItemDelegateMixIn',
+	'MixedItemDelegate', 'QssMsgBox', 'QssInputBox', 'AnimationImgMixIn', 'QClickableLabel',
+	'QDoubleClickableLabel', 'GET_X_LPARAM', 'GET_Y_LPARAM', 'check_resize_pos', 'msgbox',
+	'inputbox', 'resolve_xp_font_problem', 'center_window', 'move_center',
+	'move_rightbottom', 'center_to', 'change_widget_class', 'gbk', 'utf8', 'uni', 'uni8',
+	'loadqss']
 
 
 class TrayMixIn(object):
@@ -286,15 +297,20 @@ class EmitCallMixIn(object):
 	'''
 	用于线程同步，在工作线程中需要以QT界面线程调用函数时使用。
 	self.emit_call(self.slot_button_clicked, "abc", 123)
+	Qt的emit()方法并不支持字典参数，因此emit_call也不支持kwargs参数，
+	对于这种情况建议使用后面的ThreadingInvokeStubInMainThread代替。
 	'''
 	def __init__(self):
 		self.connect(self, QtCore.SIGNAL("emit_call"), self.emit_call_func)
 
-	def emit_call(self, func, *args, **kwargs):
-		self.emit(QtCore.SIGNAL("emit_call"), func, *args, **kwargs)
+	def emit_call(self, func, *args):
+		'''
+		emit()方法并不支持kwargs参数
+		'''
+		self.emit(QtCore.SIGNAL("emit_call"), func, *args)
 
-	def emit_call_func(self, func, *args, **kwargs):
-		func(*args, **kwargs)
+	def emit_call_func(self, func, *args):
+		func(*args)
 
 
 class EmitCallDecorator(object):
@@ -306,13 +322,12 @@ class EmitCallDecorator(object):
 	local = threading.local()
 	local.instances = []
 
-	def __init__(self, func, *args, **kw):
+	def __init__(self, func, *args):
 		self.func = func
 		self.args = args
-		self.kw = kw
 
-	def __call__(self, *args, **kw):
-		self.func.im_self.emit_call(self.func, *args, **kw)
+	def __call__(self, *args):
+		self.func.im_self.emit_call(self.func, *args)
 
 	@staticmethod
 	def create(func):
@@ -323,6 +338,49 @@ class EmitCallDecorator(object):
 		instance = EmitCallDecorator(func)
 		EmitCallDecorator.local.instances.append(instance)
 		return instance.__call__
+
+
+class ThreadingInvokeStubInMainThread(QtCore.QObject):
+	'''
+	参考自http://www.newsmth.net/bbscon.php?bid=1099&id=7877
+	'''
+	instances = set()
+
+	def __init__(self):
+		QtCore.QObject.__init__(self)
+
+	@QtCore.pyqtSlot("PyQt_PyObject", "PyQt_PyObject", "PyQt_PyObject", "PyQt_PyObject")
+	def callMethod(self, resultObject, func, args, kwargs):
+		try:
+			resultObject["value"] = func(*args, **kwargs)
+		except Exception as e:
+			resultObject["exception"] = e
+
+	@staticmethod
+	def callMethodInMainThread(func, *args, **kwargs):
+		resultObject = {}
+		QtCore.QMetaObject.invokeMethod(threadingInvokeStubInMainThread, "callMethod",
+				QtCore.Qt.AutoConnection, QtCore.Q_ARG("PyQt_PyObject", resultObject),
+				QtCore.Q_ARG("PyQt_PyObject", func), QtCore.Q_ARG("PyQt_PyObject", args),
+				QtCore.Q_ARG("PyQt_PyObject", kwargs))
+		if "exception" in resultObject:
+			raise resultObject["exception"]
+		return resultObject.get("value")
+
+	@classmethod
+	def wrap(cls, func):
+		'''
+		包装一个目标函数以便在非Qt界面线程中调用，被包装的函数会在PyQt主线程中执行。
+		通常只由PyQt主线程调用，因此instances简单地作为类成员变量，无需使用线程本地存储。
+		暂时未考虑func和类之间循环引用的问题。
+		'''
+		instance = functools.partial(callFromThread, func)
+		ThreadingInvokeStubInMainThread.instances.add(instance)
+		return instance
+
+threadingInvokeStubInMainThread = ThreadingInvokeStubInMainThread()
+callFromThread = threadingInvokeStubInMainThread.callMethodInMainThread
+callFromThread_wrap = threadingInvokeStubInMainThread.wrap
 
 
 class RowHeightItemDelegateMixIn(object):
@@ -773,3 +831,29 @@ def loadqss(name, encoding="gbk"):
 		f.open(QtCore.QFile.ReadOnly)	# 打开失败返回False，继续readAll()返回空QByteArray
 		qssdata = unicode(f.readAll(), encoding)
 	return qssdata
+
+
+def __update__all__():
+	with open(__file__) as f:
+		exports = []
+		for line in f:
+			m = re.match(b"(?:def|class)\s+([^(]+)\(", line)
+			if not m:
+				# 匹配 std_date = isoformat_date 这样的全局重命名
+				m = re.match(b"([^\s]+) = .+", line)
+			if m:
+				item = m.group(1)
+				if not item.startswith("_"):
+					exports.append(item)
+		print exports
+	to = b"__all__ = %s" % exports
+	print to
+	before = open(__file__).read()
+	r = re.compile(b"^__all__\s*=\s*\[[^]]*]", re.M)
+	after = r.sub(to, before, 1)
+	if after != before:
+		open(__file__, "w").write(after)
+
+
+if __name__ == "__main__":
+	__update__all__()
