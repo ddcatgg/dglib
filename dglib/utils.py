@@ -17,9 +17,9 @@ __all__ = ['LockableDict', 'DictObj', 'OrderedDictObj', 'RepeatableTimer', 'Queu
 	'decode_time', 'dhms', 'unescape_html', 'SafeDumper', 'print_', 'tr', 'getfileext',
 	'getfilebase', 'extractbaseext', 'changefileext', 'we_are_frozen', 'is_forking',
 	'module_path', 'module_file', 'extenddir', 'get_argv_param', 'load_table_file',
-	'dict_it_by_idx', 'val', 'defaultencoding', 'get_fileversion', 'get_fileversioninfo',
-	'makesure_dirpathexists', 'redirectSystemStreamsIfNecessary', 'runas_admin',
-	'disable_deprecationwarnings', 'getconsolehwnd', 'wts_msgbox', 'msgbox',
+	'dict_it_by_idx', 'val', 'defaultencoding', 'setdefaultencoding', 'get_fileversion',
+	'get_fileversioninfo', 'makesure_dirpathexists', 'redirectSystemStreamsIfNecessary',
+	'runas_admin', 'disable_deprecationwarnings', 'getconsolehwnd', 'wts_msgbox', 'msgbox',
 	'set_exit_handler', 'make_closure', 'urlencode_uni', 'decode_json', 'dget']
 
 
