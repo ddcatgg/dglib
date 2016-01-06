@@ -406,6 +406,9 @@ def defaultencoding():
 	return codecs.lookup(locale.getpreferredencoding()).name
 
 
+SYS_ENCODING = defaultencoding()
+
+
 def setdefaultencoding(encoding=None):
 	if encoding is None:
 		encoding = locale.getpreferredencoding()
@@ -630,16 +633,16 @@ def dget(d, path, default=None, separator="/"):
 	return d
 
 
-def _a(u, encoding="mbcs"):
+def _a(u, encoding=SYS_ENCODING):
 	if isinstance(u, unicode):
-		return u.encode("mbcs")
-	elif encoding == "mbcs":
+		return u.encode(SYS_ENCODING)
+	elif encoding == SYS_ENCODING:
 		return u
 	else:
-		return unicode(u, encoding).encode("mbcs")
+		return unicode(u, encoding).encode(SYS_ENCODING)
 
 
-def _u(s, encoding="mbcs"):
+def _u(s, encoding=SYS_ENCODING):
 	if isinstance(s, unicode):
 		return s
 	elif isinstance(s, str):
