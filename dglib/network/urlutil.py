@@ -48,7 +48,7 @@ class Fetcher(object):
 					break
 			for result in self.iterator(self._fetch, _openers):
 				if result.err is None:
-					ok = self.validator(result.html) if self.validator else True
+					ok = self.validator(result) if self.validator else True
 					if ok:
 						_openers.remove(result.opener)
 				results[openers.index(result.opener)] = result
@@ -107,7 +107,7 @@ class Opener(BaseOpener):
 		self.opener = self._build_opener()
 		if not addheaders:
 			addheaders = []
-		if dict(addheaders).get("User-Agent") == None:
+		if dict(addheaders).get("User-Agent") is None:
 			addheaders.append(("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.89 Safari/537.36"))
 		self.opener.addheaders = addheaders
 		if headers:
@@ -131,7 +131,7 @@ class Opener(BaseOpener):
 
 	@classmethod
 	def create(cls, request_raw, cookie=None, postdata=None, timeout=None,
-		url=None, user_agent=None, referer=None, cookie_jar=None):
+		url=None, user_agent=None, referer=None, cookie_jar=None, header_keys=None):
 		'''
 		@param cookie: ×Ö·û´®»ò×Öµä
 		'''
@@ -139,11 +139,12 @@ class Opener(BaseOpener):
 		if url:
 			d["url"] = url
 		if user_agent:
-			d["User-agent"] = user_agent
+			d["User-Agent"] = user_agent
 		if referer:
 			d["Referer"] = referer
 
-		addheaders = make_addheaders(d, "Referer User-agent".split())
+		# header_keys = "Referer User-Agent".split()
+		addheaders = make_addheaders(d, header_keys)
 		result = cls(d["url"], addheaders, postdata, timeout, cookie_jar=cookie_jar)
 		if cookie is not None:
 			cookies = build_cookie(cookie, domain=d.get("Host", ""))
@@ -257,13 +258,9 @@ def parse_postdata_table(s):
 	return result
 
 
-def make_addheaders(d, keys):
-	result = []
-	for key in keys:
-		val = d.get(key)
-		if val is not None:
-			result.append((key, val))
-	return result
+def make_addheaders(d, keys=None):
+	lower_keys = map(lambda x: x.lower(), keys) if keys else None
+	return [(k, v) for k, v in d.iteritems() if not lower_keys or k.lower() in lower_keys]
 
 
 def set_addheaders(addheaders, key, val):
