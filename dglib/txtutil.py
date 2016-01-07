@@ -4,6 +4,7 @@ import codecs
 import __builtin__
 from bs4 import UnicodeDammit
 
+
 def get_fileencoding(filename, default="", detail=None):
 	encoding = default
 	skip_bytes = 0
@@ -40,6 +41,7 @@ def get_fileencoding(filename, default="", detail=None):
 		detail["skip_bytes"] = skip_bytes
 	return encoding
 
+
 def open(filename, mode="r", encoding=None, skip_bytes=0):
 	detail = {}
 	if encoding is None:
@@ -53,6 +55,7 @@ def open(filename, mode="r", encoding=None, skip_bytes=0):
 	f.seek(skip_bytes)	# 跳过指示头
 	# 注意：f.read()返回的是unicode
 	return f
+
 
 def readfile(filename, encoding="gbk"):
 	with open(filename) as f:
