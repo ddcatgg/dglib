@@ -107,7 +107,7 @@ class Opener(BaseOpener):
 		self.opener = self._build_opener()
 		if not addheaders:
 			addheaders = []
-		if dict(addheaders).get("User-Agent") is None:
+		if "User-Agent" not in dict(addheaders):
 			addheaders.append(("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.89 Safari/537.36"))
 		self.opener.addheaders = addheaders
 		if headers:
@@ -142,6 +142,9 @@ class Opener(BaseOpener):
 			d["User-Agent"] = user_agent
 		if referer:
 			d["Referer"] = referer
+
+		if "Cookie" in d:
+			del d["Cookie"]
 
 		# header_keys = "Referer User-Agent".split()
 		addheaders = make_addheaders(d, header_keys)

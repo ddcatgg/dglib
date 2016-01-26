@@ -521,12 +521,20 @@ def runas_admin(exefile, param, workdir, showcmd=None):
 	import win32api
 	import win32con
 	import platform
+	import pywintypes
 	if showcmd is None:
 		showcmd = win32con.SW_SHOWDEFAULT
 	if platform.version() >= "6.0":	# Vista
-		ret = win32api.ShellExecute(0, "runas", exefile, param, workdir, showcmd)
+		# pywintypes.error: (5, 'ShellExecute', '¾Ü¾ø·ÃÎÊ¡£')
+		try:
+			ret = win32api.ShellExecute(0, "runas", exefile, param, workdir, showcmd)
+		except pywintypes.error:	# @UndefinedVariable
+			ret = -1
 	else:
-		ret = win32api.ShellExecute(0, None, exefile, param, workdir, showcmd)
+		try:
+			ret = win32api.ShellExecute(0, None, exefile, param, workdir, showcmd)
+		except pywintypes.error:	# @UndefinedVariable
+			ret = -1
 	return ret > 32
 
 
@@ -614,7 +622,7 @@ def decode_json(s):
 	if s:
 		try:
 			result = json.loads(s)
-		except ValueError:
+		except ValueError as e:
 			pass
 	return result
 

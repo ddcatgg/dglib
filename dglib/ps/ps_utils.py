@@ -7,6 +7,7 @@ import ctypes
 ProcessBasicInformation = 0
 STATUS_SUCCESS = 0
 
+
 class PROCESS_BASIC_INFORMATION(ctypes.Structure):
 		_fields_ = [
 			("Reserved1", ctypes.c_void_p),
@@ -15,6 +16,7 @@ class PROCESS_BASIC_INFORMATION(ctypes.Structure):
 			("UniqueProcessId", ctypes.c_void_p), 	# ULONG_PTR
 			("Reserved3", ctypes.c_void_p)
 		]
+
 
 def get_ppid():
 	# NtQueryInformationProcess的用法参考自：
@@ -45,6 +47,7 @@ def get_ppid():
 	finally:
 		win32api.FreeLibrary(ntdll._handle)
 
+
 def die_with_parent():
 	ppid = get_ppid()
 	if not ppid:
@@ -64,6 +67,7 @@ def die_with_parent():
 		if hpproc:
 			win32api.CloseHandle(hpproc)
 
+
 def die_with_parent_unreliable():
 	'''
 	这种方法经测试不可靠，父进程已经退出了有时还在等。
@@ -78,6 +82,7 @@ def die_with_parent_unreliable():
 				curr_process.terminate()
 				break
 			time.sleep(1)
+
 
 def start_die_with_parent_thread(daemon=True, func=die_with_parent):
 	import threading
