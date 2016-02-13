@@ -7,7 +7,7 @@ from setuptools import setup, find_packages
 setup(
 	name='dglib',
 	packages=find_packages(),
-	version='0.1',
+	version='0.1.1',
 	description='Daemon glance lib',
 	author='DDGG',
 	author_email='990080@qq.com',
