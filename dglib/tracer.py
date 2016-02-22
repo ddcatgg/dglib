@@ -63,17 +63,32 @@ class CompositeFile(object):
 			f.close()
 
 
+class SafeOutStream(object):
+	def __init__(self, underlying_stream, encoding=None, errors='replace'):
+		self.underlying_stream = underlying_stream
+		self.encoding = encoding
+		self.errors = errors
+
+	def write(self, s):
+		if isinstance(s, unicode):
+			s = s.encode(self.encoding, errors=self.errors)
+		self.underlying_stream.write(s)
+
+	def flush(self):
+		self.underlying_stream.flush()
+
+
 class ScreenLogger(object):
 	'''
 	可将屏幕输出的内容同时保存到一个日志文件。
 	用法：
 	sys.stdout = sys.stderr = ScreenLogger("日志文件名")
 	'''
-	def __init__(self, filename="", encoding=None, append=False, showtime=False):
+	def __init__(self, filename="", encoding=None, append=False, showtime=False, logfile=None):
 		self.filename = filename
 		self.append = append
 		self.showtime = showtime
-		self.logfile = None
+		self.logfile = logfile
 		self.lastlogtime = 0
 		self.encoding = encoding
 		self.stdout = sys.__stdout__
