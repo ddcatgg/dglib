@@ -416,6 +416,14 @@ def setdefaultencoding(encoding=None):
 	sys.setdefaultencoding(encoding)
 
 
+def nullfile():
+	import platform
+	return '/dev/null' if platform.system() == 'Linux' else 'nul'
+
+
+SYS_NULLFILE = nullfile()
+
+
 def get_fileversion(filename):
 	import win32api
 	info = win32api.GetFileVersionInfo(filename, os.sep)
