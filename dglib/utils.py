@@ -324,7 +324,7 @@ def is_forking():
 	return len(sys.argv) == 3 and sys.argv[1] == '--multiprocessing-fork'
 
 
-def module_path(filename=""):
+def module_path(module_name='', module=None, filename=""):
 	""" This will get us the program's directory,
 	even if we are frozen using py2exe"""
 
@@ -334,6 +334,14 @@ def module_path(filename=""):
 		result = os.path.normpath(os.path.dirname(sys.executable))
 
 	else:
+
+		if not module and module_name:
+			module = sys.modules.get(module_name)
+
+		if module:
+			import inspect
+			filename = inspect.getfile(module)
+
 		if not filename:
 			if sys._getframe().f_back:
 				filename = sys._getframe().f_back.f_code.co_filename
