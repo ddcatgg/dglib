@@ -5,7 +5,7 @@ import __builtin__
 from bs4 import UnicodeDammit
 
 
-def get_fileencoding(filename, default="", detail=None):
+def get_fileencoding(filename, default=None, detail=None):
 	encoding = default
 	skip_bytes = 0
 	if os.path.isfile(filename):
@@ -45,7 +45,9 @@ def get_fileencoding(filename, default="", detail=None):
 def open(filename, mode="r", encoding=None, skip_bytes=0):
 	detail = {}
 	if encoding is None:
-		encoding = get_fileencoding(filename, default="gb18030", detail=detail)
+		encoding = get_fileencoding(filename, detail=detail)
+	if encoding is None:
+		encoding = "gb18030"
 	if not skip_bytes:
 		skip_bytes = detail.get("skip_bytes", skip_bytes)
 
