@@ -32,7 +32,7 @@ class Singleton2(type):
 		return cls._instance
 
 
-class SingletonMixin():
+class SingletonMixin(object):
 	__instance = None
 	__lock = threading.RLock()
 
