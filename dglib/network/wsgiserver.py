@@ -37,6 +37,7 @@ class EventletWSGIServer(object):
 			else:
 				self.errno = 0
 				result = True
+				break
 		return result
 
 	def serve_forever(self, logfile=None):
