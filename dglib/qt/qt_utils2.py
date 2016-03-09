@@ -1,4 +1,4 @@
-# -*- coding: gbk -*-
+# -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 import os
 import re
@@ -26,8 +26,8 @@ class TrayMixIn(object):
 	def __init__(self, app, title, style=1):
 		self.app = app
 		self.title = title
-		self.style = style	# 0=Ê¹ÓÃ×îĞ¡»¯²Ëµ¥Ïî·ç¸ñ£¬1=Ê¹ÓÃ»Ò×Ö±êÌâ²Ëµ¥Ïî·ç¸ñ
-		# ³õÊ¼»¯ÍĞÅÌÍ¼±ê
+		self.style = style	# 0=ä½¿ç”¨æœ€å°åŒ–èœå•é¡¹é£æ ¼ï¼Œ1=ä½¿ç”¨ç°å­—æ ‡é¢˜èœå•é¡¹é£æ ¼
+		# åˆå§‹åŒ–æ‰˜ç›˜å›¾æ ‡
 		self.create_trayactions()
 		self.create_trayicon()
 		app.installEventFilter(self)
@@ -38,16 +38,16 @@ class TrayMixIn(object):
 	def create_trayactions(self):
 		self.actTitle = QtGui.QAction(self.title, self)
 		self.actTitle.setEnabled(False)
-		self.actMinimize = QtGui.QAction("×îĞ¡»¯", self)
+		self.actMinimize = QtGui.QAction("æœ€å°åŒ–", self)
 		self.connect(self.actMinimize, QtCore.SIGNAL("triggered()"), QtCore.SLOT("hide()"))
-		self.actRestore = QtGui.QAction("ÏÔÊ¾´°Ìå", self)
+		self.actRestore = QtGui.QAction("æ˜¾ç¤ºçª—ä½“", self)
 		self.connect(self.actRestore, QtCore.SIGNAL("triggered()"), QtCore.SLOT("show()"))
-		self.actQuit = QtGui.QAction("ÍË³ö", self)
+		self.actQuit = QtGui.QAction("é€€å‡º", self)
 		self.connect(self.actQuit, QtCore.SIGNAL("triggered()"), self.on_actQuit_triggered)
 
 	def create_trayicon(self):
 		self.mnuTray = QtGui.QMenu()
-		self.mnuTray.setStyleSheet('font: 9pt "ËÎÌå";')
+		self.mnuTray.setStyleSheet('font: 9pt "å®‹ä½“";')
 		if self.style == 0:
 			self.mnuTray.addAction(self.actMinimize)
 			self.mnuTray.addAction(self.actRestore)
@@ -69,15 +69,15 @@ class TrayMixIn(object):
 
 	def enable_trayicon(self, enable=True):
 		'''
-		¿É½ûÓÃÓÒ¼ü²Ëµ¥·ÀÖ¹ÓÃ»§ÖØ¸´µã»÷
-		@param enable: ÊÇ·ñÆôÓÃ
+		å¯ç¦ç”¨å³é”®èœå•é˜²æ­¢ç”¨æˆ·é‡å¤ç‚¹å‡»
+		@param enable: æ˜¯å¦å¯ç”¨
 		'''
 		self.trayIcon.setContextMenu(self.mnuTray if enable else None)
 
 	def trayIconActivated(self, reason):
 		'''
-		µ±ÓÃ»§µã»÷ÓÒÏÂ½ÇÍĞÅÌÍ¼±êÊ±µ÷ÓÃ
-		@param reason: Êó±êÊÂ¼ş£¨Ë«»÷»òÊÇµ¥»÷µÈ£©
+		å½“ç”¨æˆ·ç‚¹å‡»å³ä¸‹è§’æ‰˜ç›˜å›¾æ ‡æ—¶è°ƒç”¨
+		@param reason: é¼ æ ‡äº‹ä»¶ï¼ˆåŒå‡»æˆ–æ˜¯å•å‡»ç­‰ï¼‰
 		'''
 		if reason == QtGui.QSystemTrayIcon.DoubleClick:
 			state = int(self.windowState())
@@ -93,21 +93,21 @@ class TrayMixIn(object):
 	@QtCore.pyqtSignature("")
 	def on_actQuit_triggered(self):
 		'''
-		²Ëµ¥£ºÍË³ö
+		èœå•ï¼šé€€å‡º
 		'''
-		if msgbox(self, "ÕæµÄÒªÍË³öÂğ£¿", title=self.title, question=True):
+		if msgbox(self, "çœŸçš„è¦é€€å‡ºå—ï¼Ÿ", title=self.title, question=True):
 			self.quit()
 
 	def closeEvent(self, event):
 		'''
-		µãÓÒÉÏ½Ç¹Ø±ÕÊ±×îĞ¡»¯µ½ÍĞÅÌ
+		ç‚¹å³ä¸Šè§’å…³é—­æ—¶æœ€å°åŒ–åˆ°æ‰˜ç›˜
 		'''
 		event.ignore()
 		self.hide()
 
 	def eventFilter(self, target, event):
 		if event.type() == QtCore.QEvent.WindowStateChange and self.isMinimized():
-			# ÉèÖÃÒş²Ø
+			# è®¾ç½®éšè—
 			QtCore.QTimer.singleShot(0, self, QtCore.SLOT("hide()"))
 			return True
 
@@ -115,7 +115,7 @@ class TrayMixIn(object):
 
 	def eventFilter2(self, target, event):
 		'''
-		ÅÉÉúÀà¿ÉÒÔÖØÔØ´Ëº¯Êı
+		æ´¾ç”Ÿç±»å¯ä»¥é‡è½½æ­¤å‡½æ•°
 		'''
 		return self.app.eventFilter(target, event)
 
@@ -128,19 +128,19 @@ class TrayMixIn(object):
 		return False, 0
 
 	def quit(self, force=False):
-		self.trayIcon.setToolTip("ÕıÔÚÍË³ö...")
+		self.trayIcon.setToolTip("æ­£åœ¨é€€å‡º...")
 		self.hide()
 		self.trayIcon.hide()
 		if force:
-			win32process.ExitProcess(0)		# Ç¿ÖÆÍË³ö£¬±ÜÃâÍË³ö½ÏÂıµÄÎÊÌâ¡£
+			win32process.ExitProcess(0)		# å¼ºåˆ¶é€€å‡ºï¼Œé¿å…é€€å‡ºè¾ƒæ…¢çš„é—®é¢˜ã€‚
 		self.app.exit()
 
 
 class QssMixIn(object):
 	'''
-	Õâ¸öÀà°ïÖúÔÚÊ¹ÓÃQSSÃÀ»¯½çÃæµÄÊ±ºò£¬×Ô¶¯´¦Àí±êÌâÀ¸×î´ó»¯/×îĞ¡»¯°´Å¥ÊÂ¼şºÍ×´Ì¬£¬Ö§³ÖºÍTrayMixInÒ»ÆğÊ¹ÓÃ¡£
-	±êÌâÀ¸±ØĞëÊÇÒ»¸öÃüÃûÎªfraTitleBarµÄQFrame£¬ÆäÖĞÓĞ4¸ö°´Å¥btHelp¡¢btMin¡¢btMax¡¢btClose¡£
-	Òş²ØbtMax¿ÉÒÔ½ûÖ¹Ëõ·Å/×î´ó»¯´°¿Ú¡£
+	è¿™ä¸ªç±»å¸®åŠ©åœ¨ä½¿ç”¨QSSç¾åŒ–ç•Œé¢çš„æ—¶å€™ï¼Œè‡ªåŠ¨å¤„ç†æ ‡é¢˜æ æœ€å¤§åŒ–/æœ€å°åŒ–æŒ‰é’®äº‹ä»¶å’ŒçŠ¶æ€ï¼Œæ”¯æŒå’ŒTrayMixInä¸€èµ·ä½¿ç”¨ã€‚
+	æ ‡é¢˜æ å¿…é¡»æ˜¯ä¸€ä¸ªå‘½åä¸ºfraTitleBarçš„QFrameï¼Œå…¶ä¸­æœ‰4ä¸ªæŒ‰é’®btHelpã€btMinã€btMaxã€btCloseã€‚
+	éšè—btMaxå¯ä»¥ç¦æ­¢ç¼©æ”¾/æœ€å¤§åŒ–çª—å£ã€‚
 	'''
 	def __init__(self, app, qss_file):
 		self.app = app
@@ -148,22 +148,22 @@ class QssMixIn(object):
 		self.qss_enabled = True
 		self.qss_encoding = "gbk"
 
-		# ³õÊ¼»¯±êÌâÀ¸°´Å¥ÌáÊ¾
-		self.btHelp.setToolTip("°ïÖú")
-		self.btMin.setToolTip("×îĞ¡»¯")
-		self.btMax.setToolTip("×î´ó»¯")
-		self.btClose.setToolTip("¹Ø±Õ")
-		# È¥³ı±êÌâÀ¸°´Å¥µÄ½¹µã
+		# åˆå§‹åŒ–æ ‡é¢˜æ æŒ‰é’®æç¤º
+		self.btHelp.setToolTip("å¸®åŠ©")
+		self.btMin.setToolTip("æœ€å°åŒ–")
+		self.btMax.setToolTip("æœ€å¤§åŒ–")
+		self.btClose.setToolTip("å…³é—­")
+		# å»é™¤æ ‡é¢˜æ æŒ‰é’®çš„ç„¦ç‚¹
 		self.btHelp.setFocusPolicy(QtCore.Qt.NoFocus)
 		self.btMin.setFocusPolicy(QtCore.Qt.NoFocus)
 		self.btMax.setFocusPolicy(QtCore.Qt.NoFocus)
 		self.btClose.setFocusPolicy(QtCore.Qt.NoFocus)
 
-		# ¹Ò½ÓwinEvent
+		# æŒ‚æ¥winEvent
 		self.prv_winEvent = getattr(self, "winEvent", None)
 		self.winEvent = self.qss_winEvent
 
-		# ¹Ò½ÓeventFilter
+		# æŒ‚æ¥eventFilter
 		self.prv_eventFilter = getattr(self, "eventFilter", None)
 		self.eventFilter = self.qss_eventFilter
 		self.app.installEventFilter(self)
@@ -177,7 +177,7 @@ class QssMixIn(object):
 		if not qss_file:
 			qss_file = self.qss_file
 		if self.qss_avalible(qss_file):
-			# ÉèÖÃ´°ÌåÎªÎŞ±êÌâÀ¸ÎŞ±ß¿òÑùÊ½
+			# è®¾ç½®çª—ä½“ä¸ºæ— æ ‡é¢˜æ æ— è¾¹æ¡†æ ·å¼
 			if self.windowFlags() & QtCore.Qt.FramelessWindowHint != QtCore.Qt.FramelessWindowHint:
 				self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
 			QtGui.qApp.setStyleSheet(unicode(open(qss_file).read(), self.qss_encoding))
@@ -209,50 +209,50 @@ class QssMixIn(object):
 			if msg.message == win32con.WM_NCHITTEST:
 				x = GET_X_LPARAM(msg.lParam) - self.frameGeometry().x()
 				y = GET_Y_LPARAM(msg.lParam) - self.frameGeometry().y()
-				# ÅĞ¶ÏÊÇ·ñRESIZEÇøÓò
+				# åˆ¤æ–­æ˜¯å¦RESIZEåŒºåŸŸ
 				is_rszpos = check_resize_pos(self, x, y)
 				if is_rszpos and self.qss_allow_maximize() and not self.isMaximized():
 					return True, is_rszpos
 
-				# ±êÌâÀ¸ÇøÓòÎªÀ©Õ¹ºóµÄfraTopÇøÓò£¨°üÀ¨´°¿ÚµÄ2¸öÏñËØ±ß¿ò£©
+				# æ ‡é¢˜æ åŒºåŸŸä¸ºæ‰©å±•åçš„fraTopåŒºåŸŸï¼ˆåŒ…æ‹¬çª—å£çš„2ä¸ªåƒç´ è¾¹æ¡†ï¼‰
 				rect = self.fraTitleBar.geometry()
 				rect.setTop(0)
 				rect.setLeft(0)
 				rect.setWidth(self.width())
-				# ÅĞ¶Ï±êÌâÀ¸ÇøÓòÊ±ÅÅ³ı±êÌâÀ¸µÄ°´Å¥
+				# åˆ¤æ–­æ ‡é¢˜æ åŒºåŸŸæ—¶æ’é™¤æ ‡é¢˜æ çš„æŒ‰é’®
 				if rect.contains(x, y) and \
 					not isinstance(self.childAt(x, y), QtGui.QPushButton):
-					# Èç¹û´°¿ÚÒÑ¾­×î´ó»¯£¬Îª±ÜÃâ±»ÍÏ¶¯£¬±ØĞë·µ»Ø²»ÔÚ·Ç¿Í»§Çø¡£
-					# Í¬Ê±ÎªÁËÊµÏÖË«»÷±êÌâÀ¸»¹Ô­£¬ĞèÒª´¦Àí WM_LBUTTONDBLCLK¡£
+					# å¦‚æœçª—å£å·²ç»æœ€å¤§åŒ–ï¼Œä¸ºé¿å…è¢«æ‹–åŠ¨ï¼Œå¿…é¡»è¿”å›ä¸åœ¨éå®¢æˆ·åŒºã€‚
+					# åŒæ—¶ä¸ºäº†å®ç°åŒå‡»æ ‡é¢˜æ è¿˜åŸï¼Œéœ€è¦å¤„ç† WM_LBUTTONDBLCLKã€‚
 					if not self.isMaximized():
 						return True, win32con.HTCAPTION
 
 			elif msg.message == win32con.WM_NCLBUTTONDBLCLK:
 				if self.qss_allow_maximize():
-					# ×î´ó»¯ <-> »¹Ô­
+					# æœ€å¤§åŒ– <-> è¿˜åŸ
 					if self.isMaximized():
 						self.showNormal()
 					else:
 						x = GET_X_LPARAM(msg.lParam) - self.frameGeometry().x()
 						y = GET_Y_LPARAM(msg.lParam) - self.frameGeometry().y()
-						# ÅĞ¶ÏÊÇ·ñRESIZEÇøÓò
+						# åˆ¤æ–­æ˜¯å¦RESIZEåŒºåŸŸ
 						is_rszpos = check_resize_pos(self, x, y)
 						if not is_rszpos:
 							self.showMaximized()
 					return True, 0
 
-			# ÊµÏÖ´°¿Ú×î´ó»¯ºó¿ÉË«»÷±êÌâÀ¸»¹Ô­
+			# å®ç°çª—å£æœ€å¤§åŒ–åå¯åŒå‡»æ ‡é¢˜æ è¿˜åŸ
 			elif msg.message == win32con.WM_LBUTTONDBLCLK:
 				if self.qss_allow_maximize():
 					x = GET_X_LPARAM(msg.lParam) - self.frameGeometry().x()
 					y = GET_Y_LPARAM(msg.lParam) - self.frameGeometry().y()
 					if self.isMaximized():
-						# ±êÌâÀ¸ÇøÓòÎªÀ©Õ¹ºóµÄfraTopÇøÓò£¨°üÀ¨´°¿ÚµÄ2¸öÏñËØ±ß¿ò£©
+						# æ ‡é¢˜æ åŒºåŸŸä¸ºæ‰©å±•åçš„fraTopåŒºåŸŸï¼ˆåŒ…æ‹¬çª—å£çš„2ä¸ªåƒç´ è¾¹æ¡†ï¼‰
 						rect = self.fraTitleBar.geometry()
 						rect.setTop(0)
 						rect.setLeft(0)
 						rect.setWidth(self.width())
-						# ÅĞ¶Ï±êÌâÀ¸ÇøÓòÊ±ÅÅ³ı±êÌâÀ¸µÄ°´Å¥
+						# åˆ¤æ–­æ ‡é¢˜æ åŒºåŸŸæ—¶æ’é™¤æ ‡é¢˜æ çš„æŒ‰é’®
 						if rect.contains(x, y) and \
 							not isinstance(self.childAt(x, y), QtGui.QPushButton):
 							self.showNormal()
@@ -266,25 +266,25 @@ class QssMixIn(object):
 		if self.qss_enabled:
 			if event.type() == QtCore.QEvent.WindowStateChange:
 				if self.isMaximized():
-					# ĞŞÕı×î´ó»¯ºó°´Å¥×´Ì¬ÈÔÈ»ÊÇhoverµÄÎÊÌâ
+					# ä¿®æ­£æœ€å¤§åŒ–åæŒ‰é’®çŠ¶æ€ä»ç„¶æ˜¯hoverçš„é—®é¢˜
 					ev = QtGui.QMouseEvent(QtCore.QEvent.Leave,
 										   QtCore.QPoint(0, 0),
 										   QtCore.Qt.NoButton,
 										   QtCore.Qt.MouseButtons(),
 										   QtCore.Qt.KeyboardModifiers())
 					self.app.sendEvent(self.btMax, ev)
-					# ¸Ä±ä°´Å¥ÑùÊ½£¨×î´ó»¯->»¹Ô­
+					# æ”¹å˜æŒ‰é’®æ ·å¼ï¼ˆæœ€å¤§åŒ–->è¿˜åŸ
 					self.btMax.setObjectName("btRestore")
 					self.btMax.style().unpolish(self.btMax)
 					self.btMax.style().polish(self.btMax)
-					self.btMax.setToolTip("»¹Ô­")
+					self.btMax.setToolTip("è¿˜åŸ")
 					self.btMax.update()
 				else:
-					# ¸Ä±ä°´Å¥ÑùÊ½£¨»¹Ô­->×î´ó»¯£©
+					# æ”¹å˜æŒ‰é’®æ ·å¼ï¼ˆè¿˜åŸ->æœ€å¤§åŒ–ï¼‰
 					self.btMax.setObjectName("btMax")
 					self.btMax.style().unpolish(self.btMax)
 					self.btMax.style().polish(self.btMax)
-					self.btMax.setToolTip("×î´ó»¯")
+					self.btMax.setToolTip("æœ€å¤§åŒ–")
 					self.btMax.update()
 				return True
 
@@ -295,17 +295,17 @@ class QssMixIn(object):
 
 class EmitCallMixIn(object):
 	'''
-	ÓÃÓÚÏß³ÌÍ¬²½£¬ÔÚ¹¤×÷Ïß³ÌÖĞĞèÒªÒÔQT½çÃæÏß³Ìµ÷ÓÃº¯ÊıÊ±Ê¹ÓÃ¡£
+	ç”¨äºçº¿ç¨‹åŒæ­¥ï¼Œåœ¨å·¥ä½œçº¿ç¨‹ä¸­éœ€è¦ä»¥QTç•Œé¢çº¿ç¨‹è°ƒç”¨å‡½æ•°æ—¶ä½¿ç”¨ã€‚
 	self.emit_call(self.slot_button_clicked, "abc", 123)
-	QtµÄemit()·½·¨²¢²»Ö§³Ö×Öµä²ÎÊı£¬Òò´Ëemit_callÒ²²»Ö§³Ökwargs²ÎÊı£¬
-	¶ÔÓÚÕâÖÖÇé¿ö½¨ÒéÊ¹ÓÃºóÃæµÄThreadingInvokeStubInMainThread´úÌæ¡£
+	Qtçš„emit()æ–¹æ³•å¹¶ä¸æ”¯æŒå­—å…¸å‚æ•°ï¼Œå› æ­¤emit_callä¹Ÿä¸æ”¯æŒkwargså‚æ•°ï¼Œ
+	å¯¹äºè¿™ç§æƒ…å†µå»ºè®®ä½¿ç”¨åé¢çš„ThreadingInvokeStubInMainThreadä»£æ›¿ã€‚
 	'''
 	def __init__(self):
 		self.connect(self, QtCore.SIGNAL("emit_call"), self.emit_call_func)
 
 	def emit_call(self, func, *args):
 		'''
-		emit()·½·¨²¢²»Ö§³Ökwargs²ÎÊı
+		emit()æ–¹æ³•å¹¶ä¸æ”¯æŒkwargså‚æ•°
 		'''
 		self.emit(QtCore.SIGNAL("emit_call"), func, *args)
 
@@ -315,8 +315,8 @@ class EmitCallMixIn(object):
 
 class EmitCallDecorator(object):
 	'''
-	·½±ãEmitCallMixIn.emit_call()Ê¹ÓÃµÄÒ»¸öº¯Êı×°ÊÎÆ÷£¬
-	µ«²»Ö§³ÖĞ´@EmitCallDecorator.createÀ´ÓÃ£¨ÒòÎª·µ»ØµÄ»áÊÇÒ»¸öº¯Êı¶ø²»ÊÇ¶ÔÏóµÄ·½·¨£©¡£
+	æ–¹ä¾¿EmitCallMixIn.emit_call()ä½¿ç”¨çš„ä¸€ä¸ªå‡½æ•°è£…é¥°å™¨ï¼Œ
+	ä½†ä¸æ”¯æŒå†™@EmitCallDecorator.createæ¥ç”¨ï¼ˆå› ä¸ºè¿”å›çš„ä¼šæ˜¯ä¸€ä¸ªå‡½æ•°è€Œä¸æ˜¯å¯¹è±¡çš„æ–¹æ³•ï¼‰ã€‚
 	g.agent.status.state_changed.add_listener(EmitCallDecorator.create(self.slot_agent_statechanged))
 	'''
 	local = threading.local()
@@ -332,8 +332,8 @@ class EmitCallDecorator(object):
 	@staticmethod
 	def create(func):
 		'''
-		Õâ¸ö·½·¨±ãÓÚ½áºÏEvent.add_listenerÊ¹ÓÃ£¬ÒòÎªºóÕß²úÉúÈõÒıÓÃ£¬
-		¹ÊĞèÒª½«Éú³ÉµÄÊµÀı·ÅÈëÀàµÄinstancesÁĞ±íÀï£¬±ÜÃâ¹ıÔçÎö¹¹¡£
+		è¿™ä¸ªæ–¹æ³•ä¾¿äºç»“åˆEvent.add_listenerä½¿ç”¨ï¼Œå› ä¸ºåè€…äº§ç”Ÿå¼±å¼•ç”¨ï¼Œ
+		æ•…éœ€è¦å°†ç”Ÿæˆçš„å®ä¾‹æ”¾å…¥ç±»çš„instancesåˆ—è¡¨é‡Œï¼Œé¿å…è¿‡æ—©ææ„ã€‚
 		'''
 		instance = EmitCallDecorator(func)
 		EmitCallDecorator.local.instances.append(instance)
@@ -342,7 +342,7 @@ class EmitCallDecorator(object):
 
 class ThreadingInvokeStubInMainThread(QtCore.QObject):
 	'''
-	²Î¿¼×Ôhttp://www.newsmth.net/bbscon.php?bid=1099&id=7877
+	å‚è€ƒè‡ªhttp://www.newsmth.net/bbscon.php?bid=1099&id=7877
 	'''
 	instances = set()
 
@@ -370,9 +370,9 @@ class ThreadingInvokeStubInMainThread(QtCore.QObject):
 	@classmethod
 	def wrap(cls, func):
 		'''
-		°ü×°Ò»¸öÄ¿±êº¯ÊıÒÔ±ãÔÚ·ÇQt½çÃæÏß³ÌÖĞµ÷ÓÃ£¬±»°ü×°µÄº¯Êı»áÔÚPyQtÖ÷Ïß³ÌÖĞÖ´ĞĞ¡£
-		Í¨³£Ö»ÓÉPyQtÖ÷Ïß³Ìµ÷ÓÃ£¬Òò´Ëinstances¼òµ¥µØ×÷ÎªÀà³ÉÔ±±äÁ¿£¬ÎŞĞèÊ¹ÓÃÏß³Ì±¾µØ´æ´¢¡£
-		ÔİÊ±Î´¿¼ÂÇfuncºÍÀàÖ®¼äÑ­»·ÒıÓÃµÄÎÊÌâ¡£
+		åŒ…è£…ä¸€ä¸ªç›®æ ‡å‡½æ•°ä»¥ä¾¿åœ¨éQtç•Œé¢çº¿ç¨‹ä¸­è°ƒç”¨ï¼Œè¢«åŒ…è£…çš„å‡½æ•°ä¼šåœ¨PyQtä¸»çº¿ç¨‹ä¸­æ‰§è¡Œã€‚
+		é€šå¸¸åªç”±PyQtä¸»çº¿ç¨‹è°ƒç”¨ï¼Œå› æ­¤instancesç®€å•åœ°ä½œä¸ºç±»æˆå‘˜å˜é‡ï¼Œæ— éœ€ä½¿ç”¨çº¿ç¨‹æœ¬åœ°å­˜å‚¨ã€‚
+		æš‚æ—¶æœªè€ƒè™‘funcå’Œç±»ä¹‹é—´å¾ªç¯å¼•ç”¨çš„é—®é¢˜ã€‚
 		'''
 		instance = functools.partial(callFromThread, func)
 		ThreadingInvokeStubInMainThread.instances.add(instance)
@@ -385,7 +385,7 @@ callFromThread_wrap = threadingInvokeStubInMainThread.wrap
 
 class RowHeightItemDelegateMixIn(object):
 	'''
-	ÓÃÓÚµ÷ÕûQTreeViewµÄĞĞ¸ß²»ÖÁÓÚÌ«Ğ¡
+	ç”¨äºè°ƒæ•´QTreeViewçš„è¡Œé«˜ä¸è‡³äºå¤ªå°
 	'''
 	def sizeHint(self, option, index):
 		size = QtGui.QItemDelegate.sizeHint(self, option, index)
@@ -395,7 +395,7 @@ class RowHeightItemDelegateMixIn(object):
 
 class HighlightFixItemDelegateMixIn(object):
 	'''
-	ÓÃÓÚĞŞÕıQTreeViewÑ¡ÖĞĞĞÄ¬ÈÏ¸ßÁÁ»áÇå³ıÎÄ×ÖÑÕÉ«µÄÎÊÌâ
+	ç”¨äºä¿®æ­£QTreeViewé€‰ä¸­è¡Œé»˜è®¤é«˜äº®ä¼šæ¸…é™¤æ–‡å­—é¢œè‰²çš„é—®é¢˜
 	'''
 	def paint(self, painter, option, index):
 		variant = index.data(QtCore.Qt.ForegroundRole)
@@ -425,27 +425,27 @@ class QssMsgBox(QtGui.QMessageBox):
 		self.setText(text)
 		self.setIcon(QtGui.QMessageBox.Information)
 		self.setStandardButtons(QtGui.QMessageBox.Ok)
-		self.setButtonText(QtGui.QMessageBox.Ok, "È·¶¨")
+		self.setButtonText(QtGui.QMessageBox.Ok, "ç¡®å®š")
 		return self.exec_()
 
 	def warn(self, text):
 		self.setText(text)
 		self.setIcon(QtGui.QMessageBox.Warning)
 		self.setStandardButtons(QtGui.QMessageBox.Ok)
-		self.setButtonText(QtGui.QMessageBox.Ok, "È·¶¨")
+		self.setButtonText(QtGui.QMessageBox.Ok, "ç¡®å®š")
 		return self.exec_()
 
 	def question(self, text):
 		self.setText(text)
 		self.setIcon(QtGui.QMessageBox.Question)
 		self.setStandardButtons(QtGui.QMessageBox.Yes | QtGui.QMessageBox.No)
-		self.setButtonText(QtGui.QMessageBox.Yes, "ÊÇ")
-		self.setButtonText(QtGui.QMessageBox.No, "·ñ")
+		self.setButtonText(QtGui.QMessageBox.Yes, "æ˜¯")
+		self.setButtonText(QtGui.QMessageBox.No, "å¦")
 		return self.exec_() == QtGui.QMessageBox.Yes
 
 	def __call__(self, parent, msg, *args, **kwargs):
 		'''
-		Ìá¹©Óëmsgbox()º¯ÊıÒ»ÖÂµÄ½Ó¿Ú
+		æä¾›ä¸msgbox()å‡½æ•°ä¸€è‡´çš„æ¥å£
 		'''
 		title = kwargs.get("title")
 		if title is None:
@@ -457,7 +457,7 @@ class QssMsgBox(QtGui.QMessageBox):
 			if func:
 				title = func()
 		if title is None:
-			title = "ÌáÊ¾"
+			title = "æç¤º"
 		warning = kwargs.get("warning", False)
 		question = kwargs.get("question", False)
 
@@ -472,7 +472,7 @@ class QssMsgBox(QtGui.QMessageBox):
 		if msg.message == win32con.WM_NCHITTEST:
 			x = GET_X_LPARAM(msg.lParam) - self.frameGeometry().x()
 			y = GET_Y_LPARAM(msg.lParam) - self.frameGeometry().y()
-			# ÅĞ¶Ï±êÌâÀ¸ÇøÓòÊ±ÅÅ³ı°´Å¥
+			# åˆ¤æ–­æ ‡é¢˜æ åŒºåŸŸæ—¶æ’é™¤æŒ‰é’®
 			if not isinstance(self.childAt(x, y), QtGui.QPushButton):
 				return True, win32con.HTCAPTION
 		return False, 0
@@ -482,10 +482,10 @@ class QssInputBox(QtGui.QInputDialog):
 	def __init__(self, qss):
 		QtGui.QInputDialog.__init__(self)
 		self.setStyleSheet(qss)
-		self.setFixedSize(200, 117)	# height²»ÊÜ¿ØÖÆ
+		self.setFixedSize(200, 117)	# heightä¸å—æ§åˆ¶
 		self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
-		self.setOkButtonText("È·¶¨")
-		self.setCancelButtonText("È¡Ïû")
+		self.setOkButtonText("ç¡®å®š")
+		self.setCancelButtonText("å–æ¶ˆ")
 
 	def getInteger(self, parent, title, text, default, min_, max_, step):
 		val = None
@@ -510,7 +510,7 @@ class QssInputBox(QtGui.QInputDialog):
 		if msg.message == win32con.WM_NCHITTEST:
 			x = GET_X_LPARAM(msg.lParam) - self.frameGeometry().x()
 			y = GET_Y_LPARAM(msg.lParam) - self.frameGeometry().y()
-			# ÅĞ¶Ï±êÌâÀ¸ÇøÓòÊ±ÅÅ³ı°´Å¥
+			# åˆ¤æ–­æ ‡é¢˜æ åŒºåŸŸæ—¶æ’é™¤æŒ‰é’®
 			ctrl = self.childAt(x, y)
 			if not ctrl or isinstance(ctrl, (QtGui.QLabel,)):
 				return True, win32con.HTCAPTION
@@ -532,7 +532,7 @@ class AnimationImgMixIn(object):
 
 
 class QClickableLabel(QtGui.QLabel):
-	# °´ÏÂºÍÊÍ·ÅÊó±ê°´¼üÆÚ¼ä£¬Èç¹ûÊó±êÒÆ¶¯¾àÀë³¬¹ıÕâ¸ö·§ÖµÔòÅĞ¶¨ÎªÍÏ×§¶ø·Çµã»÷¡£
+	# æŒ‰ä¸‹å’Œé‡Šæ”¾é¼ æ ‡æŒ‰é”®æœŸé—´ï¼Œå¦‚æœé¼ æ ‡ç§»åŠ¨è·ç¦»è¶…è¿‡è¿™ä¸ªé˜€å€¼åˆ™åˆ¤å®šä¸ºæ‹–æ‹½è€Œéç‚¹å‡»ã€‚
 	TOLERANCE = 0
 
 	def __init__(self, parent=None):
@@ -555,7 +555,7 @@ class QClickableLabel(QtGui.QLabel):
 
 	def paintEvent(self, ev):
 		'''
-		¾ÓÖĞÏÔÊ¾QPixmap
+		å±…ä¸­æ˜¾ç¤ºQPixmap
 		'''
 		if self.pixmap() is None:
 			QtGui.QLabel.paintEvent(self, ev)
@@ -619,12 +619,12 @@ class QDoubleClickableLabel(QClickableLabel):
 
 
 def GET_X_LPARAM(lParam):
-	# ÔÚÓĞ¶à¸öÏÔÊ¾Æ÷µÄÊ±ºòÔÊĞí¸ºÖµ
+	# åœ¨æœ‰å¤šä¸ªæ˜¾ç¤ºå™¨çš„æ—¶å€™å…è®¸è´Ÿå€¼
 	return int(lParam & 0xFFFF)
 
 
 def GET_Y_LPARAM(lParam):
-	# ÔÚÓĞ¶à¸öÏÔÊ¾Æ÷µÄÊ±ºòÔÊĞí¸ºÖµ
+	# åœ¨æœ‰å¤šä¸ªæ˜¾ç¤ºå™¨çš„æ—¶å€™å…è®¸è´Ÿå€¼
 	return int(lParam >> 16 & 0xFFFF)
 
 
@@ -665,22 +665,22 @@ def msgbox(parent, msg, **kwargs):
 		if func:
 			title = func()
 	if title is None:
-		title = "ÌáÊ¾"
+		title = "æç¤º"
 	warning = kwargs.get("warning", False)
 	question = kwargs.get("question", False)
 
 	if warning:
-		QtGui.QMessageBox.warning(parent, title, msg, "È·¶¨")
+		QtGui.QMessageBox.warning(parent, title, msg, "ç¡®å®š")
 	elif question:
-		reply = QtGui.QMessageBox.question(parent, title, msg, "ÊÇ", "·ñ")
+		reply = QtGui.QMessageBox.question(parent, title, msg, "æ˜¯", "å¦")
 		if reply == 0:
 			return True
 	else:
-		QtGui.QMessageBox.information(parent, title, msg, "È·¶¨")
+		QtGui.QMessageBox.information(parent, title, msg, "ç¡®å®š")
 
 
 def inputbox(parent, label, default="", **kwargs):
-	# title = "", oktext = "È·¶¨", canceltext = "È¡Ïû", inputmode = TextInput,
+	# title = "", oktext = "ç¡®å®š", canceltext = "å–æ¶ˆ", inputmode = TextInput,
 	# returndlg = False
 	title = kwargs.get("title")
 	if title is None:
@@ -690,10 +690,10 @@ def inputbox(parent, label, default="", **kwargs):
 		if func:
 			title = func()
 	if title is None:
-		title = "ÌáÊ¾"
+		title = "æç¤º"
 
-	oktext = kwargs.get("oktext", "È·¶¨")
-	canceltext = kwargs.get("canceltext", "È¡Ïû")
+	oktext = kwargs.get("oktext", "ç¡®å®š")
+	canceltext = kwargs.get("canceltext", "å–æ¶ˆ")
 	inputmode = kwargs.get("inputmode", QtGui.QInputDialog.TextInput)
 	returndlg = kwargs.get("returndlg", False)
 
@@ -718,11 +718,11 @@ def inputbox(parent, label, default="", **kwargs):
 
 
 def resolve_xp_font_problem(dlg, tableview=None):
-	# ½â¾öXPÏÂ±í¸ñÁĞÍ·¡¢µ¯³öÏûÏ¢¿ò×ÖÌåÄÑ¿´ÎÊÌâ
-	dlg.setStyleSheet('font: 9pt "ËÎÌå";')
-	# ÁĞÍ·×ÖÌåÓÃÉÏÃæ·½·¨ÎŞ·¨ĞŞ¸Ä
+	# è§£å†³XPä¸‹è¡¨æ ¼åˆ—å¤´ã€å¼¹å‡ºæ¶ˆæ¯æ¡†å­—ä½“éš¾çœ‹é—®é¢˜
+	dlg.setStyleSheet('font: 9pt "å®‹ä½“";')
+	# åˆ—å¤´å­—ä½“ç”¨ä¸Šé¢æ–¹æ³•æ— æ³•ä¿®æ”¹
 	if tableview:
-		tableview.horizontalHeader().setStyleSheet('QHeaderView::section { font: 9pt "ËÎÌå"; }')
+		tableview.horizontalHeader().setStyleSheet('QHeaderView::section { font: 9pt "å®‹ä½“"; }')
 
 
 def center_window(win, width, height):
@@ -744,7 +744,7 @@ def move_center(win, adjust_x=0, adjust_y=0):
 
 def move_rightbottom(win, adjust_x=0, adjust_y=0):
 	desktop = QtGui.qApp.desktop()
-	desktopRect = desktop.availableGeometry(desktop.primaryScreen())	# ÅÅ³ıÁËÈÎÎñÀ¸ÇøÓò
+	desktopRect = desktop.availableGeometry(desktop.primaryScreen())	# æ’é™¤äº†ä»»åŠ¡æ åŒºåŸŸ
 	windowRect = QtCore.QRect(0, 0, win.width(), win.height())
 	windowRect.moveBottomRight(desktopRect.bottomRight())
 	windowRect.adjust(adjust_x, adjust_y, adjust_x, adjust_y)
@@ -753,9 +753,9 @@ def move_rightbottom(win, adjust_x=0, adjust_y=0):
 
 def center_to(widget, refer_widget):
 	'''
-	¶ÔÓÚÍ¬Ò»¸ö¸¸ÈİÆ÷µÄÁ½¸ö×é¼ş£¬ÒÆ¶¯Ò»¸ö×é¼şµ½ÁíÒ»¸ö×é¼şµÄÖĞĞÄµã¡£
-	@param widget: ½øĞĞÒÆ¶¯µÄÄ¿±ê×é¼ş
-	@param refer_widget: ×÷ÎªÖĞĞÄµã²Î¿¼µÄ×é¼ş
+	å¯¹äºåŒä¸€ä¸ªçˆ¶å®¹å™¨çš„ä¸¤ä¸ªç»„ä»¶ï¼Œç§»åŠ¨ä¸€ä¸ªç»„ä»¶åˆ°å¦ä¸€ä¸ªç»„ä»¶çš„ä¸­å¿ƒç‚¹ã€‚
+	@param widget: è¿›è¡Œç§»åŠ¨çš„ç›®æ ‡ç»„ä»¶
+	@param refer_widget: ä½œä¸ºä¸­å¿ƒç‚¹å‚è€ƒçš„ç»„ä»¶
 	'''
 	geo = widget.geometry()
 	geo.moveCenter(refer_widget.geometry().center())
@@ -777,7 +777,7 @@ def gbk(u, encoding="utf-8"):
 	'''
 	string convert (utf-8 -> gbk)
 	'''
-	if sip.getapi("QString") != 2:	# api=2Ê±QString»á×Ô¶¯±äÎªstrÀàĞÍ
+	if sip.getapi("QString") != 2:	# api=2æ—¶QStringä¼šè‡ªåŠ¨å˜ä¸ºstrç±»å‹
 		if isinstance(u, QtCore.QString):
 			u = unicode(u)
 
@@ -793,7 +793,7 @@ def utf8(u, encoding="gbk"):
 	'''
 	string convert (gbk -> utf-8)
 	'''
-	if sip.getapi("QString") != 2:	# api=2Ê±QString»á×Ô¶¯±äÎªstrÀàĞÍ
+	if sip.getapi("QString") != 2:	# api=2æ—¶QStringä¼šè‡ªåŠ¨å˜ä¸ºstrç±»å‹
 		if isinstance(u, QtCore.QString):
 			u = unicode(u)
 
@@ -806,7 +806,7 @@ def utf8(u, encoding="gbk"):
 
 
 def uni(s, encoding="gbk"):
-	if sip.getapi("QString") != 2:	# api=2Ê±QString»á×Ô¶¯±äÎªstrÀàĞÍ
+	if sip.getapi("QString") != 2:	# api=2æ—¶QStringä¼šè‡ªåŠ¨å˜ä¸ºstrç±»å‹
 		if isinstance(s, QtCore.QString):
 			s = unicode(s)
 
@@ -828,7 +828,7 @@ def loadqss(name, encoding="gbk"):
 		qssdata = unicode(open(qssfile).read(), encoding)
 	else:
 		f = QtCore.QFile(":/qss/%s.qss" % name)
-		f.open(QtCore.QFile.ReadOnly)	# ´ò¿ªÊ§°Ü·µ»ØFalse£¬¼ÌĞøreadAll()·µ»Ø¿ÕQByteArray
+		f.open(QtCore.QFile.ReadOnly)	# æ‰“å¼€å¤±è´¥è¿”å›Falseï¼Œç»§ç»­readAll()è¿”å›ç©ºQByteArray
 		qssdata = unicode(f.readAll(), encoding)
 	return qssdata
 
@@ -839,7 +839,7 @@ def __update__all__():
 		for line in f:
 			m = re.match(b"(?:def|class)\s+([^(]+)\(", line)
 			if not m:
-				# Æ¥Åä std_date = isoformat_date ÕâÑùµÄÈ«¾ÖÖØÃüÃû
+				# åŒ¹é… std_date = isoformat_date è¿™æ ·çš„å…¨å±€é‡å‘½å
 				m = re.match(b"([^\s]+) = .+", line)
 			if m:
 				item = m.group(1)

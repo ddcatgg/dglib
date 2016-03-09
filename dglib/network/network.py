@@ -1,4 +1,4 @@
-# -*- coding: gbk -*-
+# -*- coding: utf-8 -*-
 from __future__ import with_statement
 import time
 import threading
@@ -48,7 +48,7 @@ class TcpClient(object):
 				return
 			self.__active = True
 
-			# ·ÀÖ¹Óë free() ÖĞ¶Ô self._thread_connect µÄ²Ù×÷³åÍ»¡£
+			# é˜²æ­¢ä¸ free() ä¸­å¯¹ self._thread_connect çš„æ“ä½œå†²çªã€‚
 			self._thread_connect = threading.Thread(target=self.thread_connect,
 				args=(self.host, self.port))
 			self._thread_connect.setDaemon(True)
@@ -80,11 +80,11 @@ class TcpClient(object):
 
 			self.sock = sock
 			self.modal.start(sock)
-			self.on_connected(sock)	# ±ØĞëÔÚmodal.start()ºóµ÷ÓÃ£¬·ñÔòÔÚon_connected()ÖĞ·¢ËÍÊı¾İ»á±»ºöÂÔ¡£
+			self.on_connected(sock)	# å¿…é¡»åœ¨modal.start()åè°ƒç”¨ï¼Œå¦åˆ™åœ¨on_connected()ä¸­å‘é€æ•°æ®ä¼šè¢«å¿½ç•¥ã€‚
 			return
 
 		with self.__lock:
-			self.__active = False	# ÒÔ±ãÔÚon_connect_error()ÖĞ¿ÉÒÔÖØĞÂactivate()
+			self.__active = False	# ä»¥ä¾¿åœ¨on_connect_error()ä¸­å¯ä»¥é‡æ–°activate()
 
 		self.on_connect_error()
 

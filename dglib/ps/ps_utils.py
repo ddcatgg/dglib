@@ -1,4 +1,4 @@
-# -*- coding: gbk -*-
+# -*- coding: utf-8 -*-
 import win32api
 import win32con
 import win32event
@@ -19,7 +19,7 @@ class PROCESS_BASIC_INFORMATION(ctypes.Structure):
 
 
 def get_ppid():
-	# NtQueryInformationProcessµÄÓÃ·¨²Î¿¼×Ô£º
+	# NtQueryInformationProcessçš„ç”¨æ³•å‚è€ƒè‡ªï¼š
 	# http://stackoverflow.com/questions/6587036/alternative-to-psutil-processpid-name
 	ntdll = ctypes.windll.LoadLibrary('ntdll.dll')
 	if not ntdll:
@@ -70,7 +70,7 @@ def die_with_parent():
 
 def die_with_parent_unreliable():
 	'''
-	ÕâÖÖ·½·¨¾­²âÊÔ²»¿É¿¿£¬¸¸½ø³ÌÒÑ¾­ÍË³öÁËÓĞÊ±»¹ÔÚµÈ¡£
+	è¿™ç§æ–¹æ³•ç»æµ‹è¯•ä¸å¯é ï¼Œçˆ¶è¿›ç¨‹å·²ç»é€€å‡ºäº†æœ‰æ—¶è¿˜åœ¨ç­‰ã€‚
 	'''
 	import time
 	import psutil

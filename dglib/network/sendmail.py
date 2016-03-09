@@ -1,4 +1,4 @@
-# -*- coding: gbk -*-
+# -*- coding: utf-8 -*-
 import os
 import smtplib
 import email
@@ -6,7 +6,7 @@ import mimetypes
 from email.mime.multipart import MIMEMultipart
 from email.mime.image import MIMEImage
 
-# ÉèÖÃ·şÎñÆ÷£¬ÓÃ»§Ãû¡¢¿ÚÁîÒÔ¼°ÓÊÏäµÄºó×º
+# è®¾ç½®æœåŠ¡å™¨ï¼Œç”¨æˆ·åã€å£ä»¤ä»¥åŠé‚®ç®±çš„åç¼€
 host = ""
 user = ""
 pswd = ""
@@ -14,12 +14,12 @@ debug = False
 
 def sendmail(receiver, subject, content, **kwargs):
 	'''
-	receiver: ·¢¸øË­£¬¿ÉÓÃ·ÖºÅ·Ö¸ô¶à¸öµØÖ·¡£
-	subject: Ö÷Ìâ
-	content: ÄÚÈİ
-	sendmail("receiver@163.com", "Ö÷Ìâ", "ÄÚÈİ")
+	receiver: å‘ç»™è°ï¼Œå¯ç”¨åˆ†å·åˆ†éš”å¤šä¸ªåœ°å€ã€‚
+	subject: ä¸»é¢˜
+	content: å†…å®¹
+	sendmail("receiver@163.com", "ä¸»é¢˜", "å†…å®¹")
 	'''
-	# ÏÈËÑË÷ÓÃ»§ÃûÖĞ°üº¬µÄÓÊÏäÓòÃû£¬Èç¹ûÃ»ÓĞÔÙÈ¡smtp·şÎñÆ÷µÄÓòÃû¡£
+	# å…ˆæœç´¢ç”¨æˆ·åä¸­åŒ…å«çš„é‚®ç®±åŸŸåï¼Œå¦‚æœæ²¡æœ‰å†å–smtpæœåŠ¡å™¨çš„åŸŸåã€‚
 	if "@" in user:
 		uid, domain = user.split("@")
 	else:
@@ -27,7 +27,9 @@ def sendmail(receiver, subject, content, **kwargs):
 		domain = ".".join(host.split(".")[-2:])
 	sender = "%s<%s@%s>" % (user, uid, domain)
 	msg = MIMEMultipart()
-	msg["Subject"] = email.Header.Header(uni(subject).encode("utf8"), "utf8")
+	if isinstance(subject, unicode):
+		subject = subject.encode('utf8')
+	msg["Subject"] = email.Header.Header(subject, "utf8")
 	msg["From"] = sender
 	msg["To"] = receiver
 	msg["Date"] = email.utils.formatdate(localtime=True)
@@ -37,9 +39,11 @@ def sendmail(receiver, subject, content, **kwargs):
 	bcc = kwargs.get("bcc")
 	if bcc:
 		msg["BCC"] = bcc
-	txt = email.MIMEText.MIMEText(uni(content).encode("utf8"), _subtype="plain", _charset="utf8")
+	if isinstance(content, unicode):
+		content = content.encode('utf8')
+	txt = email.MIMEText.MIMEText(content, _subtype="plain", _charset="utf8")
 	msg.attach(txt)
-	# Ìí¼Ó¸½¼ş
+	# æ·»åŠ é™„ä»¶
 	files = kwargs.get("files")
 	if files:
 		for file in files:
@@ -65,7 +69,7 @@ def sendmail(receiver, subject, content, **kwargs):
 		return str(e)
 
 def add_file(msg, filename):
-	#Ìí¼Ó¶ş½øÖÆ¸½¼ş
+	#æ·»åŠ äºŒè¿›åˆ¶é™„ä»¶
 	if os.path.isfile(filename):
 		ctype, encoding = mimetypes.guess_type(filename)
 		if ctype is None or encoding is not None:
@@ -78,11 +82,6 @@ def add_file(msg, filename):
 	else:
 		return False
 
-def uni(s, encoding="gbk"):
-	if isinstance(s, str):
-		return unicode(s, encoding)
-	else:
-		return unicode(s)
 
 if __name__ == '__main__':
 #	host = "smtp.21cn.com"
@@ -92,8 +91,8 @@ if __name__ == '__main__':
 	user = "autoserver"
 	pswd = "autoserver2013"
 	debug = True
-	errmsg = sendmail("autoserver@163.com; 990080@qq.com", "²âÊÔ±êÌâ123", "²âÊÔÄÚÈİ1234\n²âÊÔÄÚÈİ5678", files=("r:\\ÇåÊı¾İ.rar",))
+	errmsg = sendmail("autoserver@163.com; 990080@qq.com", u"æµ‹è¯•æ ‡é¢˜123", u"æµ‹è¯•å†…å®¹1234\næµ‹è¯•å†…å®¹5678", files=("r:\\æ¸…æ•°æ®.rar",))
 	if not errmsg:
-		print "·¢ËÍ³É¹¦"
+		print "å‘é€æˆåŠŸ"
 	else:
-		print "·¢ËÍÊ§°Ü", errmsg
+		print "å‘é€å¤±è´¥", errmsg

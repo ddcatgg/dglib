@@ -1,4 +1,4 @@
-# -*- coding: gbk -*-
+# -*- coding: utf-8 -*-
 from cStringIO import StringIO
 
 class Buffer(object):
@@ -46,8 +46,8 @@ class Buffer(object):
 		self.buf.write(s)
 
 	def drop(self, n):
-		# Èç¹û½«Êı¾İ×÷ÎªStringIO¹¹Ôìº¯ÊıµÄ²ÎÊı´«µİ»áµ¼ÖÂcStringIO¹¹Ôì³ÉStringI£¬
-		# »òStringIO¹¹ÔìºóposÎª0£¬µ÷ÓÃwriteÇ°ĞèÒªseek£¬·ñÔò»áµ¼ÖÂ¸²¸ÇÒÑÓĞµÄÊı¾İ¡£
+		# å¦‚æœå°†æ•°æ®ä½œä¸ºStringIOæ„é€ å‡½æ•°çš„å‚æ•°ä¼ é€’ä¼šå¯¼è‡´cStringIOæ„é€ æˆStringIï¼Œ
+		# æˆ–StringIOæ„é€ åposä¸º0ï¼Œè°ƒç”¨writeå‰éœ€è¦seekï¼Œå¦åˆ™ä¼šå¯¼è‡´è¦†ç›–å·²æœ‰çš„æ•°æ®ã€‚
 		buf_new = StringIO()
 		buf_new.write(self.buf.getvalue()[n:])
 		self.buf = buf_new

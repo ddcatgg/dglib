@@ -1,23 +1,24 @@
-# -*- coding: gbk -*-
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 import sys
 import win32api
 import win32con
 import winerror
 import win32event
 
-g_hMutex = None	# Õâ¸ömutex²»¿ÉÊÇ¾Ö²¿±äÁ¿£¬·ñÔòÔÚº¯Êı·µ»ØÊ±»á±»ÊÍ·Å£¬Æğ²»µ½»¥³â×÷ÓÃ¡£
+g_hMutex = None	# è¿™ä¸ªmutexä¸å¯æ˜¯å±€éƒ¨å˜é‡ï¼Œå¦åˆ™åœ¨å‡½æ•°è¿”å›æ—¶ä¼šè¢«é‡Šæ”¾ï¼Œèµ·ä¸åˆ°äº’æ–¥ä½œç”¨ã€‚
 
 
 def runonce(mutex_name, register_msg="", exit=False):
 	'''
-	Ê¹ÓÃ»¥³âÁ¿±£Ö¤Ö»ÔËĞĞÒ»´Î£¬Ãû³ÆÇ°¼Ó¡°Global\¡±ÎªÈ«¾Ö»¥³âÁ¿¿ÉÓÃÓÚ¶àÓÃ»§»·¾³¡£
+	ä½¿ç”¨äº’æ–¥é‡ä¿è¯åªè¿è¡Œä¸€æ¬¡ï¼Œåç§°å‰åŠ â€œGlobal\â€ä¸ºå…¨å±€äº’æ–¥é‡å¯ç”¨äºå¤šç”¨æˆ·ç¯å¢ƒã€‚
 	'''
 	result = False
 	global g_hMutex
 
 	if register_msg:
-		# Èç¹ûÖ±½Óimport qt_utils2 »áÒıÈë¶ÔPyQtµÄÒÀÀµ£¬
-		# Ôì³ÉÆäËûimport runonceµÄ³ÌĞòÔÚpy2exe´ò°üµÄÊ±ºòÌå»ıÔö´ó
+		# å¦‚æœç›´æ¥import qt_utils2 ä¼šå¼•å…¥å¯¹PyQtçš„ä¾èµ–ï¼Œ
+		# é€ æˆå…¶ä»–import runonceçš„ç¨‹åºåœ¨py2exeæ‰“åŒ…çš„æ—¶å€™ä½“ç§¯å¢å¤§
 		qt_utils2 = __import__("dglib.qt.qt_utils2")
 		qt_utils2.UM_SHOW = win32api.RegisterWindowMessage(register_msg)
 
@@ -32,7 +33,7 @@ def runonce(mutex_name, register_msg="", exit=False):
 		else:
 			result = True
 	else:
-		win32api.MessageBox(0, "´´½¨MutexÊ§°Ü£¡", "ÌáÊ¾", win32con.MB_ICONERROR)
+		win32api.MessageBox(0, "åˆ›å»ºMutexå¤±è´¥ï¼", "æç¤º", win32con.MB_ICONERROR)
 	return result
 
 
