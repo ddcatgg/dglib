@@ -25,15 +25,17 @@ class EventletWSGIServer(object):
 			self.serve_forever(self.logfile)
 		return succ
 
-	def bind(self, ip, port):
+	def bind(self, ip, port, retry=0):
 		result = False
-		try:
-			self.sock = eventlet.listen((ip, port))
-		except socket.error, e:
-			self.errno = e.errno	# 10048: bind error
-		else:
-			self.errno = 0
-			result = True
+		for _ in range(1 + retry):
+			try:
+				self.sock = eventlet.listen((ip, port))
+			except socket.error, e:
+				self.errno = e.errno	# 10048: bind error
+				time.sleep(1)
+			else:
+				self.errno = 0
+				result = True
 		return result
 
 	def serve_forever(self, logfile=None):
@@ -57,11 +59,11 @@ class EventletWSGIServer(object):
 			self.serve_forever_inthread()
 		return succ
 
-	def bind_inthread(self, daemon=True):
+	def bind_inthread(self, retry=0, daemon=True):
 		if not self.strand:
 			self.init_strand(daemon)
 
-		defer = self.strand.synchronize(self.bind, self.bindip, self.bindport)
+		defer = self.strand.synchronize(self.bind, self.bindip, self.bindport, retry)
 		return defer.wait_value()
 
 	def serve_forever_inthread(self):
