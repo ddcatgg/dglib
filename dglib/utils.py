@@ -309,7 +309,7 @@ def extractbaseext(filename):
 
 
 def changefileext(filename, ext):
-	return ".".join(filename.rsplit(".")[:-1] + [ext])
+	return ".".join(list(os.path.splitext(filename)[:-1]) + [ext])
 
 
 def we_are_frozen():
