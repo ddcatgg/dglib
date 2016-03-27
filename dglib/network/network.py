@@ -5,7 +5,6 @@ import threading
 import select
 import socket
 
-import _libpath
 from tracer import get_tracer
 from thread_safe import SafeList, QueueEx
 from SocketIOModal.SelectSocketIOModal import SelectSocketIOModal

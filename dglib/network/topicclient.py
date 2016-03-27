@@ -1,7 +1,6 @@
 # -*- coding: gbk -*-
 from twisted.internet import reactor, protocol, task
 
-import _libpath
 import tracer
 from thread_safe import Event
 from httphandler import HttpHandler
