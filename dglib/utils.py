@@ -633,7 +633,7 @@ def decode_json(s):
 	if s:
 		try:
 			result = json.loads(s)
-		except ValueError as e:
+		except ValueError:
 			pass
 	return result
 
