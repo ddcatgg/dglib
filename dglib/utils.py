@@ -309,7 +309,7 @@ def extractbaseext(filename):
 
 
 def changefileext(filename, ext):
-	return ".".join(filename.rsplit(".")[:-1] + [ext])
+	return ".".join(list(os.path.splitext(filename)[:-1]) + [ext])
 
 
 def we_are_frozen():
@@ -324,44 +324,39 @@ def is_forking():
 	return len(sys.argv) == 3 and sys.argv[1] == '--multiprocessing-fork'
 
 
-def module_path(module_name='', module=None, filename=""):
+def module_path(module_name='__main__', module=None, filename=""):
 	""" This will get us the program's directory,
 	even if we are frozen using py2exe"""
 
-	result = ""
-	if we_are_frozen():
-		#return os.path.dirname(unicode(sys.executable, sys.getfilesystemencoding())) + u"/"
-		result = os.path.normpath(os.path.dirname(sys.executable))
+	if not filename:
+		filename = module_file(module_name, module)
 
-	else:
-
-		if not module and module_name:
-			module = sys.modules.get(module_name)
-
-		if module:
-			import inspect
-			filename = inspect.getfile(module)
-
-		if not filename:
-			if sys._getframe().f_back:
-				filename = sys._getframe().f_back.f_code.co_filename
-			else:
-				filename = __file__
-
-		result = os.path.normpath(os.path.dirname(filename))
+	result = os.path.normpath(os.path.dirname(filename))
 
 	if result and result[-1] != os.sep:
 		result += os.sep
 	return result
 
 
-def module_file():
+def module_file(module_name='__main__', module=None):
+	result = ""
 	if we_are_frozen():
-		return sys.executable
-	elif sys._getframe().f_back:
-		return sys._getframe().f_back.f_code.co_filename
+		result = sys.executable
 	else:
-		return __file__
+		if not module and module_name:
+			module = sys.modules.get(module_name)
+
+		if module:
+			import inspect
+			result = inspect.getfile(module)
+
+		if not result:
+			if sys._getframe().f_back:
+				result = sys._getframe().f_back.f_code.co_filename
+			else:
+				result = __file__
+
+	return result
 
 
 def extenddir(sour, directory):
@@ -638,7 +633,7 @@ def decode_json(s):
 	if s:
 		try:
 			result = json.loads(s)
-		except ValueError as e:
+		except ValueError:
 			pass
 	return result
 

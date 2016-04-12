@@ -1,5 +1,6 @@
 import time
 import socket
+import logging
 import eventlet
 
 from dglib import tracer
@@ -8,7 +9,7 @@ from dglib.thread_safe import Strand
 
 class EventletWSGIServer(object):
 	def __init__(self, app, bindip, bindport, logfile=None,
-				socket_timeout=60, **kwargs):
+				 socket_timeout=60, **kwargs):
 		self.app = app
 		self.bindip = bindip
 		self.bindport = bindport
@@ -45,7 +46,7 @@ class EventletWSGIServer(object):
 			if logfile:
 				log = tracer.CompositeFile(logfile, 'w', nocache=True)
 			else:
-				log = tracer.BlackHole()
+				log = logging.getLogger('wsgi')	# tracer.BlackHole()
 			self.kwargs['log'] = log
 		eventlet.wsgi.server(self.sock, self.app,
 							socket_timeout=self.socket_timeout,

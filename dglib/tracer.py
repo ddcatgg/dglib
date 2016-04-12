@@ -8,6 +8,7 @@ import datetime
 import threading
 import time
 import logging.handlers
+
 from utils import module_path, extractbaseext, isoformat_date, makesure_dirpathexists
 
 __all__ = ["BlackHole", "CompositeFile", "ScreenLogger", "StreamToLogger", "NoneTracer", "Tracer", "Tracer2", "MyStreamHandler",
@@ -341,10 +342,21 @@ class UnicodeLoggerFormatter(logging.Formatter):
 		self.encoding = encoding
 
 	def format(self, record):
-		s = super(UnicodeLoggerFormatter, self).format(record)
+		try:
+			s = super(UnicodeLoggerFormatter, self).format(record)
+		except UnicodeError as e:
+			self.dump_record(record)
+			import traceback
+			return 'UnicodeLoggerFormatter - %s (see LogRecord.dump)->\n%s' % \
+				   (e.message, traceback.format_exc())
+
 		if isinstance(s, str):
 			s = unicode(s, self.encoding)
 		return s
+
+	def dump_record(self, record):
+		import cPickle as pickle
+		pickle.dump(record, open('LogRecord.dump', 'wb'))
 
 
 class UnicodeFromGBKLoggerFormatter(UnicodeLoggerFormatter):
