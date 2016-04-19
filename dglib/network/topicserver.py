@@ -1,13 +1,13 @@
 # -*- coding: gbk -*-
 import time
 import xml.etree.cElementTree as ET
+
 from twisted.internet import reactor, protocol, task
+from twisted.protocols.policies import TimeoutMixin
 
 from handler.httphandler import HttpHandler
-from timeout_guard import TimeoutGuardMixIn
-from xmlutil import xmlelem_from_text, pretty_indent
-from thread_safe import Event
-from tracer import Tracer2
+from dglib.xmlutil import xmlelem_from_text, pretty_indent
+from dglib.tracer import Tracer2
 
 
 class TopicServer(object):
@@ -75,7 +75,7 @@ class TopicServer(object):
 		return self.notifiers.get(topic, default)
 
 
-class TopicServerProtocol(protocol.Protocol, TimeoutGuardMixIn):
+class TopicServerProtocol(protocol.Protocol, TimeoutMixin):
 
 	def __repr__(self):
 		return "<TopicServerProtocol %s:%d server_port=%d>" % \
@@ -106,13 +106,10 @@ class TopicServerProtocol(protocol.Protocol, TimeoutGuardMixIn):
 		self.handler = HttpHandler(self)
 		self.handler.package_received_event.add_listener(self.on_package_received)
 
-		TimeoutGuardMixIn.__init__(self, timeout=self.option["timeout"])
-		self.timeoutguard_start()
+		self.setTimeout(self.option["timeout"])
 
-	def connectionLost(self, reason):
+	def connectionLost(self, reason=protocol.connectionDone):
 		if self.debug: self.tracer.info("disconnected\n")
-
-		self.timeoutguard_stop()
 
 		# 解除订阅
 		for topic in self.subscribed_topics:
@@ -126,7 +123,7 @@ class TopicServerProtocol(protocol.Protocol, TimeoutGuardMixIn):
 		self.handler.handle_data(data)
 
 	def on_package_received(self, sender, package):
-		self.timeoutguard_reset()
+		self.resetTimeout()
 
 		if not self.login_ok:
 			if package.method == "GET" and package.path == "/Login":
@@ -198,9 +195,6 @@ class TopicServerProtocol(protocol.Protocol, TimeoutGuardMixIn):
 			if self.debug: self.tracer.error("*** error! request handler not exists: %r" % path_processor)
 			self.send_response(404)
 
-	def on_timeoutguard_timeout(self):
-		self.disconnect()
-
 	def send(self, s):
 		if self.debug: self.tracer.debug("send(%d bytes): %s\n" % (len(s), s.replace("\r\n", "\n")))
 		self.transport.write(s)
@@ -213,6 +207,9 @@ class TopicServerProtocol(protocol.Protocol, TimeoutGuardMixIn):
 
 	def disconnect(self):
 		self.transport.loseConnection()
+
+	def timeoutConnection(self):			# 重载的超时方法
+		self.transport.abortConnection()	# 如果不重载默认是loseConnection()
 
 
 class Notifier(object):
@@ -269,13 +266,12 @@ class StatusNotifier(Notifier):
 
 	def update_data(self):
 		import psutil
-		import win32process
 		# Time
 		self.data["RunTime"] = int(time.clock() - self.time_start)
 		self.data["Time"] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
 		# Cpu
 		self.data["CpuGlobalPercent"] = int(psutil.cpu_percent())
-		curr_process = psutil.Process(win32process.GetCurrentProcessId())
+		curr_process = psutil.Process()
 		self.data["CpuPercent"] = int(curr_process.cpu_percent())
 		# Mem
 		meminfo = psutil.virtual_memory()
@@ -294,6 +290,7 @@ class StatusNotifier(Notifier):
 
 def update_status():
 	notifier_status.notify()
+
 
 if __name__ == "__main__":
 	notifier_status = StatusNotifier()
