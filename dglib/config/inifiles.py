@@ -31,7 +31,7 @@ class IniFile(RawConfigParser):
 		fp = open(filename, "w")
 		self.write(fp)
 
-	def set(self, section, option, value):
+	def set(self, section, option, value=None):
 		if not self.has_section(section):
 			self.add_section(section)
 		if isinstance(value, unicode):
@@ -102,6 +102,8 @@ class IniFile(RawConfigParser):
 						line = "=".join((toAsc(key), val))
 					else:
 						line = " = ".join((toAsc(key), val))
+				else:
+					line = key	# value is None and self._optcre == OPTCRE_NV
 				fp.write("%s\n" % line)
 			fp.write("\n")
 
@@ -113,6 +115,7 @@ def test():
 	name += str(len(name))
 	ini.set("option", "name", name)
 	ini.save()
+
 
 if __name__ == "__main__":
 	test()
