@@ -36,8 +36,9 @@ def attr(elem, *args):
 
 def fix_attribs(elem):
 	dict_ = {}
-	for key in elem.attrib:
-		dict_.update({key: attr(elem, key)})
+	if elem is not None:
+		for key in elem.attrib:
+			dict_.update({key: attr(elem, key)})
 	return dict_
 
 
