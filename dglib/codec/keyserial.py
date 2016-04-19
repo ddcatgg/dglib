@@ -79,7 +79,7 @@ def get_serial():
 	return serial
 
 
-def get_registerkey(serial, code):
+def get_registerkey(serial, code=""):
 	"""
 	根据序列号生成注册码
 	@param code: 特征码
