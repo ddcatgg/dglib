@@ -12,6 +12,7 @@ user = ""
 pswd = ""
 debug = False
 
+
 def sendmail(receiver, subject, content, **kwargs):
 	'''
 	receiver: 发给谁，可用分号分隔多个地址。
@@ -67,6 +68,7 @@ def sendmail(receiver, subject, content, **kwargs):
 	except Exception, e:
 		print str(e)
 		return str(e)
+
 
 def add_file(msg, filename):
 	#添加二进制附件
