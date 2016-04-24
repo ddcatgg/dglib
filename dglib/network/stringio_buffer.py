@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from cStringIO import StringIO
 
+
 class Buffer(object):
 	def __init__(self, data=""):
 		self.buf = StringIO()

@@ -1,12 +1,13 @@
 # -*- coding: gbk -*-
 from twisted.internet import reactor, protocol, task
+from twisted.protocols.policies import TimeoutMixin
 
-import tracer
-from thread_safe import Event
-from httphandler import HttpHandler
-from timeout_guard import TimeoutGuardMixIn
+from dglib import tracer
+from dglib.thread_safe import Event
+from handler.httphandler import HttpHandler
 
 DEBUG = False
+
 
 class TopicClient(object):
 	def __init__(self, host, port):
@@ -54,13 +55,7 @@ class TopicClient(object):
 		return handler
 
 
-class TopicClientProtocol(protocol.Protocol, TimeoutGuardMixIn):
-
-#	def __init__(self):
-#		print "TopicClientProtocol.__init__"
-#
-#	def __del__(self):
-#		print "__del__", self
+class TopicClientProtocol(protocol.Protocol, TimeoutMixin):
 
 	def connectionMade(self):
 		self.factory.resetDelay()
@@ -75,18 +70,14 @@ class TopicClientProtocol(protocol.Protocol, TimeoutGuardMixIn):
 
 		self.login("admin", "admin")
 		self.subscribe()
-
-		TimeoutGuardMixIn.__init__(self, timeout=60 * 1000)
-		self.timeoutguard_start()
+		self.setTimeout(60)
 
 		self._timer_subscribe = task.LoopingCall(self.subscribe)	# 注意：循环引用
 		self._timer_subscribe.start(20)	# 每20秒周期性地重新订阅
 
 		self.factory.owner.connected_event.dispatch()
 
-	def connectionLost(self, reason):
-		self.timeoutguard_stop()
-
+	def connectionLost(self, reason=protocol.connectionDone):
 		self._timer_subscribe.stop()
 		self._timer_subscribe = None	# 解除循环引用
 
@@ -98,7 +89,7 @@ class TopicClientProtocol(protocol.Protocol, TimeoutGuardMixIn):
 		self.handler.handle_data(data)
 
 	def on_package_received(self, sender, package):
-		self.timeoutguard_reset()
+		self.resetTimeout()
 
 		if DEBUG: self.traceline(package)
 
@@ -107,9 +98,6 @@ class TopicClientProtocol(protocol.Protocol, TimeoutGuardMixIn):
 
 	def process_notify(self, package):
 		self.factory.owner.notify_received_event.dispatch(package.content)
-
-	def on_timeoutguard_timeout(self):
-		self.disconnect()
 
 	def send(self, s):
 		self.transport.write(s)
@@ -132,10 +120,14 @@ class TopicClientProtocol(protocol.Protocol, TimeoutGuardMixIn):
 	def disconnect(self):
 		self.transport.loseConnection()
 
+	def timeoutConnection(self):			# 重载的超时方法
+		self.transport.abortConnection()	# 如果不重载默认是loseConnection()
+
 
 def test_round(client):
 	client.start()
 	client.stop()
+
 
 def callback(client):
 	param = []
@@ -144,12 +136,14 @@ def callback(client):
 	param.append("alarm%d=%d" % (4, 5))
 	client.send_package("GET", "/Alarm?%s" % "&".join(param))
 
+
 def test():
 	client = TopicClient("127.0.0.1", 62001)
 #	task.LoopingCall(test_round, client).start(1)
 	reactor.callLater(10, callback, client)
 	client.start()
 	reactor.run()
+
 
 if __name__ == "__main__":
 	test()
