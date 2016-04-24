@@ -629,13 +629,27 @@ def urlencode_uni(us):
 
 
 def decode_json(s):
+	"""
+	兼容不正确地使用"\"逃逸符的JSON格式
+	如\&quot; \&#39; 等
+	详见：http://stackoverflow.com/questions/7921164/syntax-error-when-parsing-json-string
+	JSON正确性验证：http://jsonlint.com/
+	"""
 	result = None
 	if s:
+		s = s.replace(r'\&', '')
 		try:
 			result = json.loads(s)
-		except ValueError:
+		except ValueError as e:
 			pass
 	return result
+
+
+def html_unescape(s):
+	import HTMLParser
+	parser = HTMLParser.HTMLParser()
+	s = s.replace('&nbsp;', '')
+	return parser.unescape(s)
 
 
 def dget(d, path, default=None, separator="/"):
