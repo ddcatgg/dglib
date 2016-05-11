@@ -34,8 +34,10 @@ class Fetcher(object):
 		return result
 
 	def on_retry(self, retry, openers):
-		print "正在重试 (%d/%d) ... (%d个页面)" % (retry, self.retry, len(openers))
-		return True
+		validate_error_operers = filter(lambda x: hasattr(x, 'validate_error') and x.validate_error, openers)
+		print "正在重试 (%d/%d) ... (%d个页面/%d个检验失败)" % (retry, self.retry, len(openers), len(validate_error_operers))
+		should_break = len(openers) == len(validate_error_operers)
+		return not should_break
 
 	def fetch(self, openers):
 		results = [OpenerResult(opener) for opener in openers]
@@ -51,6 +53,10 @@ class Fetcher(object):
 					ok = self.validator(result) if self.validator else True
 					if ok:
 						_openers.remove(result.opener)
+					else:
+						# 检验失败时设置一个标志，这个标志是设置在临时局部opener对象上的，不影响传入的openers。
+						result.opener.validate_error = True
+						result.err = ValueError('validate error')
 				results[openers.index(result.opener)] = result
 
 			retry += 1
