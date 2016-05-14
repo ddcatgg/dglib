@@ -90,3 +90,45 @@ def start_die_with_parent_thread(daemon=True, func=die_with_parent):
 	_thread_check_parent_alive.setDaemon(daemon)
 	_thread_check_parent_alive.start()
 	return _thread_check_parent_alive
+
+
+def set_subprocess_create_new_console():
+	def _my_create_process(*args):
+		'''
+		通过BrowserDebugStream重定向了spynner的日志输出，但是
+		QNetworkReplyImplPrivate::error: Internal problem, this method must only be called once.
+		是PyQt直接输出到stderr的，无法消除。
+		解决方法是通过multiprocessing模块建立一个独立进程来执行spynner的代码，不幸的是multiprocessing创建
+		的进程默认是继承父进程的标准输入输出句柄的，而且是写死的没法改。
+		因此需要用这个MyCreateProcess替换掉_subprocess.CreateProcess，	在MyCreateProcess内部设置了
+		subprocess.CREATE_NEW_CONSOLE参数。
+		'''
+		import subprocess
+		args = list(args)
+		# new console
+		args[5] = subprocess.CREATE_NEW_CONSOLE
+		# hidden
+		import win32process
+		import win32con
+		startupinfo = subprocess.STARTUPINFO()
+		startupinfo.dwFlags |= win32process.STARTF_USESHOWWINDOW
+		startupinfo.wShowWindow = win32con.SW_HIDE
+		args[-1] = startupinfo
+		return _CreateProcess(*args)
+
+	import _subprocess
+	_CreateProcess = _subprocess.CreateProcess
+	_subprocess.CreateProcess = _my_create_process
+
+
+def test_create_process_create_new_console():
+	import subprocess
+	import win32process
+	import win32con
+	startupinfo = subprocess.STARTUPINFO()
+	startupinfo.dwFlags |= win32process.STARTF_USESHOWWINDOW
+	startupinfo.wShowWindow = win32con.SW_HIDE
+	p = subprocess.Popen("taobao_change_amount.exe /getinfo",
+						 creationflags=subprocess.CREATE_NEW_CONSOLE,
+						 startupinfo=startupinfo)
+	p.wait()
