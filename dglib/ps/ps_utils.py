@@ -92,7 +92,7 @@ def start_die_with_parent_thread(daemon=True, func=die_with_parent):
 	return _thread_check_parent_alive
 
 
-def set_subprocess_create_new_console():
+def set_subprocess_create_new_console(is_set=True):
 	def _my_create_process(*args):
 		'''
 		通过BrowserDebugStream重定向了spynner的日志输出，但是
@@ -114,11 +114,20 @@ def set_subprocess_create_new_console():
 		startupinfo.dwFlags |= win32process.STARTF_USESHOWWINDOW
 		startupinfo.wShowWindow = win32con.SW_HIDE
 		args[-1] = startupinfo
-		return _CreateProcess(*args)
+		return _origin_CreateProcess(*args)
 
 	import _subprocess
-	_CreateProcess = _subprocess.CreateProcess
-	_subprocess.CreateProcess = _my_create_process
+	if is_set:	# set
+		# 防止无限递归
+		if getattr(_subprocess, '_origin_CreateProcess', None) is None:
+			setattr(_subprocess, '_origin_CreateProcess', _subprocess.CreateProcess)
+			_origin_CreateProcess = _subprocess.CreateProcess
+			_subprocess.CreateProcess = _my_create_process
+	else:		# restore
+		_origin_CreateProcess = getattr(_subprocess, '_origin_CreateProcess', None)
+		if _origin_CreateProcess is not None:
+			_subprocess.CreateProcess = _origin_CreateProcess
+			delattr(_subprocess, '_origin_CreateProcess')
 
 
 def test_create_process_create_new_console():
