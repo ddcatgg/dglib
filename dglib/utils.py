@@ -333,7 +333,7 @@ def module_path(module_name='__main__', module=None, filename=""):
 	if not filename:
 		filename = module_file(module_name, module)
 
-	result = os.path.normpath(os.path.dirname(filename))
+	result = os.path.abspath(os.path.dirname(filename))
 
 	if result and result[-1] != os.sep:
 		result += os.sep
@@ -361,6 +361,7 @@ def module_file(module_name='__main__', module=None):
 			else:
 				result = __file__
 
+	result = os.path.abspath(result)
 	return result
 
 
