@@ -672,6 +672,15 @@ def dget(d, path, default=None, separator="/"):
 	return d
 
 
+def dget_int(d, path, default=0, separator="/"):
+	v = dget(d, path, default, separator)
+	if isinstance(v, (int, long)):
+		return v
+	if isinstance(v, basestring) and v.isdigit():
+		return int(v)
+	return default
+
+
 def _a(u, encoding=SYS_ENCODING):
 	if isinstance(u, unicode):
 		return u.encode(SYS_ENCODING)
