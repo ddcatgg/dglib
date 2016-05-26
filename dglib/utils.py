@@ -619,6 +619,16 @@ def make_closure(func, *args, **kwargs):
 	return __closeure
 
 
+def flatten(l):
+	y = []
+	for x in l:
+		if isinstance(x, (list, tuple)):
+			y += flatten(x)
+		else:
+			y += [x]
+	return y
+
+
 def urlencode_uni(us):
 	'''
 	将指定的unicode编码的URL转换成ASCII字符串，unicode汉字会编码为%AA%BB的格式。
