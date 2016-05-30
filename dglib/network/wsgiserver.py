@@ -2,6 +2,7 @@ import time
 import socket
 import logging
 import eventlet
+import eventlet.wsgi
 
 from dglib import tracer
 from dglib.thread_safe import Strand
