@@ -8,6 +8,7 @@ import Queue
 import pickle
 import codecs
 import locale
+from functools import partial
 
 from basis import ordered_dict
 
@@ -22,7 +23,7 @@ __all__ = ['LockableDict', 'DictObj', 'OrderedDictObj', 'RepeatableTimer', 'Queu
 	'makesure_dirpathexists', 'redirectSystemStreamsIfNecessary', 'runas_admin',
 	'disable_deprecationwarnings', 'getconsolehwnd', 'wts_msgbox', 'msgbox',
 	'set_exit_handler', 'make_closure', 'urlencode_uni', 'decode_json', 'html_unescape',
-	'dget']
+	'dget', 'to_bytes', 'to_bytes_utf8', 'to_unicode', 'to_unicode_utf8']
 
 
 class LockableDict(dict):
@@ -691,13 +692,13 @@ def dget_int(d, path, default=0, separator="/"):
 	return default
 
 
-def _a(u, encoding=SYS_ENCODING):
+def _a(u, encoding=SYS_ENCODING, from_encoding=SYS_ENCODING):
 	if isinstance(u, unicode):
-		return u.encode(SYS_ENCODING)
-	elif encoding == SYS_ENCODING:
+		return u.encode(encoding)
+	elif encoding.lower().replace('-', '') == from_encoding.lower().replace('-', ''):
 		return u
 	else:
-		return unicode(u, encoding).encode(SYS_ENCODING)
+		return unicode(u, from_encoding).encode(encoding)
 
 
 def _u(s, encoding=SYS_ENCODING):
@@ -711,6 +712,12 @@ def _u(s, encoding=SYS_ENCODING):
 
 def _u8(s):
 	return _u(s, encoding="utf-8")
+
+
+to_bytes = _a
+to_bytes_utf8 = partial(_a, encoding='utf-8', from_encoding='utf-8')
+to_unicode = _u
+to_unicode_utf8 = _u8
 
 
 def __test_print_():
