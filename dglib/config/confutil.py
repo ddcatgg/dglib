@@ -16,7 +16,6 @@ def update_globals_from_module(module, target=None, update_nonexists=False):
 		target = globals()
 	orig = target.copy()
 	for k, v in config.iteritems():
-		do_update = update_nonexists or k in orig and v != orig[k]
 		if update_nonexists or k in orig and v != orig[k]:
 			target[k] = v
 			updated[k] = v
@@ -31,6 +30,6 @@ def load_conf_file_as_module(filename):
 	try:
 		with open(filename) as f:
 			exec(compile(f.read(), filename, 'exec'), module.__dict__)
-	except IOError as e:
+	except IOError:
 		raise # IOError('Unable to load configuration file (%s) - %s' % (filename, e.strerror))
 	return module
