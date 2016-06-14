@@ -692,22 +692,22 @@ def dget_int(d, path, default=0, separator="/"):
 	return default
 
 
-def _a(u, encoding=SYS_ENCODING, from_encoding=SYS_ENCODING):
+def _a(u, encoding=SYS_ENCODING, from_encoding=SYS_ENCODING, errors='replace'):
 	if isinstance(u, unicode):
-		return u.encode(encoding)
+		return u.encode(encoding, errors=errors)
 	elif encoding.lower().replace('-', '') == from_encoding.lower().replace('-', ''):
 		return u
 	else:
-		return unicode(u, from_encoding).encode(encoding)
+		return unicode(u, from_encoding).encode(encoding, errors=errors)
 
 
-def _u(s, encoding=SYS_ENCODING):
+def _u(s, encoding=SYS_ENCODING, errors='replace'):
 	if isinstance(s, unicode):
 		return s
 	elif isinstance(s, str):
-		return unicode(s, encoding)
+		return unicode(s, encoding, errors=errors)
 	else:
-		return unicode(s)
+		return unicode(s, errors=errors)
 
 
 def _u8(s):
