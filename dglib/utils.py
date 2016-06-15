@@ -611,6 +611,16 @@ def set_exit_handler(func):
 		signal.signal(signal.SIGTERM, func)
 
 
+def isdebugging():
+	# http://stackoverflow.com/questions/333995/how-to-detect-that-python-code-is-being-executed-through-the-debugger/26605963
+	import inspect
+
+	for frame in inspect.stack():
+		if frame[1].endswith("pydevd.py"):
+			return True
+	return False
+
+
 def make_closure(func, *args, **kwargs):
 	'''
 	Python2.5开始可使用functools.partial()代替此函数
