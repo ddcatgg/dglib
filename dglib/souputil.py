@@ -36,7 +36,7 @@ def make_soup(html):
 	return html, BeautifulSoup(html, 'lxml')
 
 
-def souptext(soup_obj, selector=None, default='', encoding=None):
+def soup_text(soup_obj, selector=None, default='', encoding=None):
 	result = default
 	if selector is not None:
 		soup_obj = soup_obj.select(selector)[0]
