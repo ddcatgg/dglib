@@ -9,7 +9,7 @@ import threading
 import time
 import logging.handlers
 
-from utils import module_path, extractbaseext, isoformat_date, makesure_dirpathexists
+from .utils import module_path, extractbaseext, isoformat_date, makesure_dirpathexists, SYS_ENCODING
 
 __all__ = ["BlackHole", "CompositeFile", "ScreenLogger", "StreamToLogger", "NoneTracer", "Tracer", "Tracer2", "MyStreamHandler",
 		"DailyRotatingFileHandler", "Utf8DailyRotatingFileHandler", "UdpLogHandler", "get_logger", "get_logger2", "std_formatter",
@@ -344,7 +344,7 @@ class UnicodeLoggerFormatter(logging.Formatter):
 
 	def format(self, record):
 		try:
-			s = super(UnicodeLoggerFormatter, self).format(record)
+			s = self._format(record)
 		except UnicodeError as e:
 			self.dump_record(record)
 			import traceback
@@ -353,6 +353,49 @@ class UnicodeLoggerFormatter(logging.Formatter):
 
 		if isinstance(s, str):
 			s = unicode(s, self.encoding)
+		return s
+
+	def _format(self, record):
+		"""
+		重载了父类的format()方法
+		针对 s = self._fmt % record.__dict__ 的异常进行了处理，
+		一般来说是格式化模版字符串和record其中某个属性值的类型不一致（一个是str另一个是unicode）
+		引起Unicode自动转型失败导致的。
+		"""
+		record.message = record.getMessage()
+		if self.usesTime():
+			record.asctime = self.formatTime(record, self.datefmt)
+		try:
+			s = self._fmt % record.__dict__
+		except UnicodeError:
+			fmt_type = type(self._fmt)
+			adverse_type = unicode if fmt_type is str else str
+			import copy
+			_record = copy.copy(record)
+			for k, v in _record.__dict__.iteritems():
+				if isinstance(v, adverse_type):
+					v = safe_coding(v)
+					setattr(_record, k, v)
+			s = self._fmt % _record.__dict__
+		if record.exc_info:
+			# Cache the traceback text to avoid converting it multiple times
+			# (it's constant anyway)
+			if not record.exc_text:
+				record.exc_text = self.formatException(record.exc_info)
+		if record.exc_text:
+			if s[-1:] != "\n":
+				s = s + "\n"
+			try:
+				s = s + record.exc_text
+			except UnicodeError:
+				# Sometimes filenames have non-ASCII chars, which can lead
+				# to errors when s is Unicode and record.exc_text is str
+				# See issue 8924.
+				# We also use replace for when there are multiple
+				# encodings, e.g. UTF-8 for the filesystem and latin-1
+				# for a script. See issue 13232.
+				s = s + record.exc_text.decode(sys.getfilesystemencoding(),
+											   'replace')
 		return s
 
 	def dump_record(self, record):
@@ -755,15 +798,20 @@ def unicode_safe_write(f, s, encoding=None, safe_stuff=None):
 	try:
 		f.write(s)
 	except UnicodeError:
-		if not encoding:
-			encoding = SYS_ENCODING
-		if isinstance(s, unicode):
-			if safe_stuff is None:
-				safe_stuff = s.encode(encoding, errors='replace')
-		else:
-			if safe_stuff is None:
-				safe_stuff = s.decode(encoding, errors='replace')
+		safe_stuff = safe_coding(s)
 		f.write(safe_stuff)
+	return safe_stuff
+
+
+def safe_coding(s, encoding=None, safe_stuff=None, errors='replace'):
+	if not encoding:
+		encoding = SYS_ENCODING
+	if isinstance(s, unicode):
+		if safe_stuff is None:
+			safe_stuff = s.encode(encoding, errors=errors)
+	else:
+		if safe_stuff is None:
+			safe_stuff = s.decode(encoding, errors=errors)
 	return safe_stuff
 
 
