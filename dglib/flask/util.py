@@ -2,16 +2,16 @@
 from base64 import b64decode
 from flask import current_app, request, make_response, jsonify
 
-
-__all__ = ['succ_response', 'fail_response', 'do_basic_auth', 'make_auth_required_response', 'make_cors_response']
-
-
-def succ_response(msg=None, value=None):
-	return jsonify(code=0, msg=msg, value=value)
+__all__ = ['succ_response', 'fail_response', 'do_basic_auth', 'make_auth_required_response', 'make_cors_response',
+		   'param_get', 'param_getint']
 
 
-def fail_response(code, msg=None):
-	return jsonify(code=code, msg=msg)
+def succ_response(**kw):
+	return jsonify(code=0, value=kw)
+
+
+def fail_response(code):
+	return jsonify(code=code)
 
 
 def do_basic_auth():
@@ -51,3 +51,28 @@ def make_cors_response(*args):
 	allow_headers = "Referer,Accept,Origin,User-Agent"
 	rep.headers['Access-Control-Allow-Headers'] = allow_headers
 	return rep
+
+
+def param_get(key, default=None):
+	"""
+	'' -> default
+	None -> default
+	"""
+	val = request.values.get(key)
+	if not val:  # None or empty str
+		return default
+	return val
+
+
+def param_getint(key, default=None):
+	"""
+	'' -> default
+	None -> default
+	'0' -> 0
+	'1' -> 1
+	"""
+	val = request.values.get(key)
+	if val and val.isdigit():
+		return int(val)
+	else:
+		return default
