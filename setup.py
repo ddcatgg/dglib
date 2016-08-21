@@ -3,11 +3,12 @@
 import glob
 from setuptools import setup, find_packages
 
+from dglib import __version__
 
 setup(
 	name='dglib',
 	packages=find_packages(),
-	version='0.1.1',
+	version=__version__,
 	description='Daemon glance lib',
 	author='DDGG',
 	author_email='990080@qq.com',
