@@ -39,7 +39,7 @@ class SingletonMixin(object):
 	@classmethod
 	def get_instance(cls, *args, **kw):
 		with cls.__lock:
-			if not cls.__instance:
+			if cls.__instance is None:
 				cls.__instance = cls(*args, **kw)
 			return cls.__instance
 
