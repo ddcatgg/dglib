@@ -706,7 +706,7 @@ def _a(u, encoding=SYS_ENCODING, from_encoding=SYS_ENCODING, errors='replace'):
 	if isinstance(u, unicode):
 		return u.encode(encoding, errors=errors)
 	elif encoding.lower().replace('-', '') == from_encoding.lower().replace('-', ''):
-		return u
+		return str(u)
 	else:
 		return unicode(u, from_encoding).encode(encoding, errors=errors)
 
