@@ -10,13 +10,14 @@ from dglib.thread_safe import Strand
 
 class EventletWSGIServer(object):
 	def __init__(self, app, bindip, bindport, logfile=None,
-				 socket_timeout=60, **kwargs):
+				 socket_timeout=60, ssl_context=None, **kwargs):
 		self.app = app
 		self.bindip = bindip
 		self.bindport = bindport
 		self.logfile = logfile
 		self.socket_timeout = socket_timeout
-		self.kwargs = kwargs
+		self.ssl_context = ssl_context
+		self.kwargs = kwargs	# {"log", }
 
 		self.sock = None
 		self.errno = 0
@@ -49,9 +50,19 @@ class EventletWSGIServer(object):
 			else:
 				log = logging.getLogger('wsgi')	# tracer.BlackHole()
 			self.kwargs['log'] = log
-		eventlet.wsgi.server(self.sock, self.app,
-							socket_timeout=self.socket_timeout,
-							**self.kwargs)
+		if self.ssl_context:
+			certfile, keyfile = self.ssl_context
+			sock = eventlet.wrap_ssl(self.sock,
+									 certfile=certfile,
+									 keyfile=keyfile,
+									 server_side=True),
+			if isinstance(sock, tuple):
+				sock = sock[0]
+		else:
+			sock = self.sock
+		eventlet.wsgi.server(sock, self.app,
+							 socket_timeout=self.socket_timeout,
+							 **self.kwargs)
 
 	def init_strand(self, daemon=True):
 		self.strand = Strand()
