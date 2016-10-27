@@ -15,8 +15,8 @@ def get_fileencoding(filename, default=None, detail=None):
 			"""
 			ANSI：				无格式定义；
 			Unicode：			前两个字节为FFFE；
-			Unicode big endian：	前两字节为FEFF；　
-			UTF-8：				前三字节为EFBBBF；　
+			Unicode big endian：	前两字节为FEFF；
+			UTF-8：				前三字节为EFBBBF；
 			"""
 			if s == chr(0xff) + chr(0xfe):
 				encoding = "utf_16_le"
