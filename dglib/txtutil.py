@@ -34,6 +34,7 @@ def get_fileencoding(filename, default=None, detail=None):
 			f.seek(0)
 			content = f.read()
 			dammit = UnicodeDammit(content)
+			# 注意，这种方法有时获取到的编码是'windows-1252'（拉丁字符集的一种），因而不可靠。
 			encoding = dammit.original_encoding
 		f.close()
 	if isinstance(detail, dict):
