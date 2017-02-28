@@ -338,9 +338,10 @@ class UnicodeLoggerFormatter(logging.Formatter):
 	由于logging.conf不支持为Formatter配置自定义参数，故在日志配置文件中无法直接使用此类。
 	可直接在日志配置文件中使用此类的子类。
 	"""
-	def __init__(self, fmt=None, datefmt=None, encoding=None):
+	def __init__(self, fmt=None, datefmt=None, encoding=None, errors='replace'):
 		super(UnicodeLoggerFormatter, self).__init__(fmt, datefmt)
 		self.encoding = encoding
+		self.errors = errors
 
 	def format(self, record):
 		try:
@@ -352,7 +353,7 @@ class UnicodeLoggerFormatter(logging.Formatter):
 				   (e.message, traceback.format_exc())
 
 		if isinstance(s, str):
-			s = unicode(s, self.encoding)
+			s = unicode(s, self.encoding, self.errors)
 		return s
 
 	def _format(self, record):
@@ -405,6 +406,8 @@ class UnicodeLoggerFormatter(logging.Formatter):
 
 class UnicodeFromGBKLoggerFormatter(UnicodeLoggerFormatter):
 	"""
+	当输出的日志内容主要包含以gbk编码的中文时，使用此Formatter类。
+
 	日志配置文件中使用的示例：
 	[formatter_dailyFileFormatter]
 	class=tracer.UnicodeFromGBKLoggerFormatter
