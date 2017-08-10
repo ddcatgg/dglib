@@ -12,18 +12,7 @@ from functools import partial
 
 from basis import ordered_dict
 
-__all__ = ['LockableDict', 'DictObj', 'OrderedDictObj', 'RepeatableTimer', 'QueueEx',
-	'format_frame', 'str2hex', 'lst2hex', 'mapord', 'mapchr', 'isoformat_date',
-	'isoformat_time', 'isoformat_datetime', 'std_date', 'std_time', 'std_datetime',
-	'decode_time', 'dhms', 'unescape_html', 'SafeDumper', 'print_', 'tr', 'getfileext',
-	'getfilebase', 'extractbaseext', 'changefileext', 'we_are_frozen', 'is_forking',
-	'module_path', 'module_file', 'extenddir', 'get_argv_param', 'load_table_file',
-	'dict_it_by_idx', 'val', 'defaultencoding', 'SYS_ENCODING', 'setdefaultencoding',
-	'nullfile', 'SYS_NULLFILE', 'get_fileversion', 'get_fileversioninfo',
-	'makesure_dirpathexists', 'redirectSystemStreamsIfNecessary', 'runas_admin',
-	'disable_deprecationwarnings', 'getconsolehwnd', 'wts_msgbox', 'msgbox',
-	'set_exit_handler', 'make_closure', 'urlencode_uni', 'decode_json', 'html_unescape',
-	'dget', 'to_bytes', 'to_bytes_utf8', 'to_unicode', 'to_unicode_utf8']
+__all__ = ['LockableDict', 'DictObj', 'OrderedDictObj', 'RepeatableTimer', 'QueueEx', 'format_frame', 'str2hex', 'lst2hex', 'mapord', 'mapchr', 'isoformat_date', 'isoformat_time', 'isoformat_datetime', 'std_date', 'std_time', 'std_datetime', 'decode_time', 'dhms', 'unescape_html', 'SafeDumper', 'print_', 'tr', 'getfileext', 'getfilebase', 'extractbaseext', 'changefileext', 'we_are_frozen', 'is_forking', 'module_path', 'module_file', 'extenddir', 'get_argv_param', 'load_table_file', 'dict_it_by_idx', 'val', 'defaultencoding', 'SYS_ENCODING', 'setdefaultencoding', 'nullfile', 'SYS_NULLFILE', 'get_fileversion', 'get_fileversioninfo', 'makesure_dirpathexists', 'redirectSystemStreamsIfNecessary', 'runas_admin', 'disable_deprecationwarnings', 'getconsolehwnd', 'wts_msgbox', 'msgbox', 'set_exit_handler', 'isdebugging', 'make_closure', 'flatten', 'group_list', 'urlencode_uni', 'decode_json', 'html_unescape', 'dget', 'dget_int', 'to_bytes', 'to_bytes_utf8', 'to_unicode', 'to_unicode_utf8']
 
 
 class LockableDict(dict):
@@ -638,6 +627,10 @@ def flatten(l):
 		else:
 			y += [x]
 	return y
+
+
+def chunk(seq, chunk_len):
+	return (seq[i:i + group_len] for i in range(0, len(seq), chunk_len))
 
 
 def urlencode_uni(us):
