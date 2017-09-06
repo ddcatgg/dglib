@@ -1,12 +1,17 @@
 from __future__ import absolute_import
+
 import re
 from ConfigParser import RawConfigParser, NoSectionError, NoOptionError, DEFAULTSECT
+
 from ..basis.ordered_dict import OrderedDictCaseInsensitive
+from ..utils import SYS_ENCODING
 
 
 class IniFile(RawConfigParser):
-	def __init__(self, filename=None, encoding="gbk", get_unicode=False, compact=False):
+	def __init__(self, filename=None, encoding=None, get_unicode=False, compact=False):
 		RawConfigParser.__init__(self, dict_type=OrderedDictCaseInsensitive)
+		if encoding is None:
+			encoding = SYS_ENCODING
 		self._encoding = encoding
 		self._get_unicode = get_unicode
 		self._compact = compact
@@ -82,6 +87,7 @@ class IniFile(RawConfigParser):
 	# overloaded (key = val -> key=val ?)
 	def write(self, fp):
 		"""Write an .ini-format representation of the configuration state."""
+
 		# unicode -> ascii
 		def toAsc(s):
 			return str(s) if not isinstance(s, unicode) else s.encode(self._encoding)
@@ -103,7 +109,7 @@ class IniFile(RawConfigParser):
 					else:
 						line = " = ".join((toAsc(key), val))
 				else:
-					line = key	# value is None and self._optcre == OPTCRE_NV
+					line = key  # value is None and self._optcre == OPTCRE_NV
 				fp.write("%s\n" % line)
 			fp.write("\n")
 
