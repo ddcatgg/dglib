@@ -33,7 +33,7 @@ class IniFile(RawConfigParser):
 	def save(self, filename=None):
 		if not filename:
 			filename = self.filename
-		fp = open(filename, "w")
+		fp = open(filename, 'w')
 		self.write(fp)
 
 	def set(self, section, option, value=None):
@@ -45,7 +45,7 @@ class IniFile(RawConfigParser):
 			value = str(value)
 		RawConfigParser.set(self, section, option, value)
 
-	def _get(self, section, option, default=""):
+	def _get(self, section, option, default=''):
 		try:
 			value = RawConfigParser.get(self, section, option)
 		except Exception, e:
@@ -60,7 +60,7 @@ class IniFile(RawConfigParser):
 		else:
 			return self._get(*args, **kw)
 
-	def getunicode(self, section, option, default=u""):
+	def getunicode(self, section, option, default=u''):
 		value = self._get(section, option, default)
 		if not isinstance(value, unicode):
 			value = unicode(value, self._encoding)
@@ -75,7 +75,7 @@ class IniFile(RawConfigParser):
 
 	def getfloat(self, section, option, default=0.):
 		value = self.get(section, option)
-		if re.match(r"\d*?\.?\d+$", value):
+		if re.match(r'\d*?\.?\d+$', value):
 			return float(value)
 		else:
 			return default
@@ -93,35 +93,35 @@ class IniFile(RawConfigParser):
 			return str(s) if not isinstance(s, unicode) else s.encode(self._encoding)
 
 		if self._defaults:
-			fp.write("[%s]\n" % toAsc(DEFAULTSECT))
+			fp.write('[%s]\n' % toAsc(DEFAULTSECT))
 			for (key, value) in self._defaults.items():
-				fp.write("%s = %s\n" % (toAsc(key), toAsc(value).replace('\n', '\n\t')))
-			fp.write("\n")
+				fp.write('%s = %s\n' % (toAsc(key), toAsc(value).replace('\n', '\n\t')))
+			fp.write('\n')
 		for section in self._sections:
-			fp.write("[%s]\n" % toAsc(section))
+			fp.write('[%s]\n' % toAsc(section))
 			for (key, value) in self._sections[section].items():
-				if key == "__name__":
+				if key == '__name__':
 					continue
 				if (value is not None) or (self._optcre == self.OPTCRE):
 					val = toAsc(value).replace('\n', '\n\t')
 					if self._compact:
-						line = "=".join((toAsc(key), val))
+						line = '='.join((toAsc(key), val))
 					else:
-						line = " = ".join((toAsc(key), val))
+						line = ' = '.join((toAsc(key), val))
 				else:
 					line = key  # value is None and self._optcre == OPTCRE_NV
-				fp.write("%s\n" % line)
-			fp.write("\n")
+				fp.write('%s\n' % line)
+			fp.write('\n')
 
 
 def test():
-	ini = IniFile("test.ini")
-	name = ini.get("option", "name", "aaa")
+	ini = IniFile('test.ini')
+	name = ini.get('option', 'name', 'aaa')
 	print name
 	name += str(len(name))
-	ini.set("option", "name", name)
+	ini.set('option', 'name', name)
 	ini.save()
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
 	test()
