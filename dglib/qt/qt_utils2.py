@@ -379,8 +379,14 @@ class ThreadingInvokeStubInMainThread(QtCore.QObject):
 		return instance
 
 threadingInvokeStubInMainThread = ThreadingInvokeStubInMainThread()
-callFromThread = threadingInvokeStubInMainThread.callMethodInMainThread
-callFromThread_wrap = threadingInvokeStubInMainThread.wrap
+
+# usage: In a work thread function, call it directly:
+#  callFromThread(self.slot_play_progress, *args, **kwargs)
+callFromThread = ThreadingInvokeStubInMainThread.callMethodInMainThread
+
+# usage: In a place which need a callback function, call it to wrap a function:
+# 	SIGNAL_PLAY_PROGRESS.connect(callFromThread_wrap(self.slot_play_progress))
+callFromThread_wrap = ThreadingInvokeStubInMainThread.wrap
 
 
 class RowHeightItemDelegateMixIn(object):
