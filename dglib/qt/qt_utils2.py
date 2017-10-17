@@ -351,10 +351,7 @@ class ThreadingInvokeStubInMainThread(QtCore.QObject):
 
 	@QtCore.pyqtSlot("PyQt_PyObject", "PyQt_PyObject", "PyQt_PyObject", "PyQt_PyObject")
 	def callMethod(self, resultObject, func, args, kwargs):
-		try:
-			resultObject["value"] = func(*args, **kwargs)
-		except Exception as e:
-			resultObject["exception"] = e
+		resultObject["value"] = func(*args, **kwargs)
 
 	@staticmethod
 	def callMethodInMainThread(func, *args, **kwargs):
@@ -363,8 +360,6 @@ class ThreadingInvokeStubInMainThread(QtCore.QObject):
 				QtCore.Qt.AutoConnection, QtCore.Q_ARG("PyQt_PyObject", resultObject),
 				QtCore.Q_ARG("PyQt_PyObject", func), QtCore.Q_ARG("PyQt_PyObject", args),
 				QtCore.Q_ARG("PyQt_PyObject", kwargs))
-		if "exception" in resultObject:
-			raise resultObject["exception"]
 		return resultObject.get("value")
 
 	@classmethod
