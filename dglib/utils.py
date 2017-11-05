@@ -23,7 +23,7 @@ __all__ = ['LockableDict', 'DictObj', 'OrderedDictObj', 'RepeatableTimer', 'Queu
 	'makesure_dirpathexists', 'redirectSystemStreamsIfNecessary', 'runas_admin',
 	'disable_deprecationwarnings', 'getconsolehwnd', 'wts_msgbox', 'msgbox',
 	'set_exit_handler', 'isdebugging', 'make_closure', 'flatten', 'chunk', 'urlencode_uni',
-	'decode_json', 'json_get', 'html_unescape', 'dget', 'dget_int', 'to_bytes', 
+	'decode_json', 'json_get', 'html_unescape', 'dget', 'dget_int', 'to_bytes',
 	'to_bytes_utf8', 'to_unicode', 'to_unicode_utf8']
 
 
@@ -214,7 +214,9 @@ def dhms(seconds):
 		s += "%d–° ±" % h
 	if m:
 		s += "%d∑÷÷”" % m
-	s += "%d√Î" % (seconds % 60)
+	sec = seconds % 60
+	if sec or not s:
+		s += "%d√Î" % (sec)
 	return s
 
 
