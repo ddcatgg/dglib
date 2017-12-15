@@ -58,7 +58,8 @@ class CompositeFile(object):
 
 	def flush(self):
 		for f in self.files:
-			f.flush()
+			if hasattr(f, 'flush'):
+				f.flush()
 
 	def close(self):
 		for f in self.files:
