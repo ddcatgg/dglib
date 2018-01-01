@@ -740,6 +740,10 @@ def move_center(win, adjust_x=0, adjust_y=0):
 	windowRect = QtCore.QRect(0, 0, win.width(), win.height())
 	windowRect.moveCenter(screenRect.center())
 	windowRect.adjust(adjust_x, adjust_y, adjust_x, adjust_y)
+	if windowRect.x() < 0:
+		windowRect.setX(0)
+	if windowRect.y() < 0:
+		windowRect.setY(0)
 	win.setGeometry(windowRect)
 
 
