@@ -13,20 +13,20 @@ import sip
 UM_SHOW = win32con.WM_USER + 100
 
 __all__ = ['UM_SHOW', 'TrayMixIn', 'QssMixIn', 'EmitCallMixIn', 'EmitCallDecorator',
-	'ThreadingInvokeStubInMainThread', 'threadingInvokeStubInMainThread', 'callFromThread',
-	'callFromThread_wrap', 'RowHeightItemDelegateMixIn', 'HighlightFixItemDelegateMixIn',
-	'MixedItemDelegate', 'QssMsgBox', 'QssInputBox', 'AnimationImgMixIn', 'QClickableLabel',
-	'QDoubleClickableLabel', 'GET_X_LPARAM', 'GET_Y_LPARAM', 'check_resize_pos', 'msgbox',
-	'inputbox', 'resolve_xp_font_problem', 'center_window', 'move_center',
-	'move_rightbottom', 'center_to', 'change_widget_class', 'gbk', 'utf8', 'uni', 'uni8',
-	'loadqss']
+		   'ThreadingInvokeStubInMainThread', 'threadingInvokeStubInMainThread', 'callFromThread',
+		   'callFromThread_wrap', 'RowHeightItemDelegateMixIn', 'HighlightFixItemDelegateMixIn',
+		   'MixedItemDelegate', 'QssMsgBox', 'QssInputBox', 'AnimationImgMixIn', 'QClickableLabel',
+		   'QDoubleClickableLabel', 'GET_X_LPARAM', 'GET_Y_LPARAM', 'check_resize_pos', 'msgbox',
+		   'inputbox', 'resolve_xp_font_problem', 'center_window', 'move_center',
+		   'move_rightbottom', 'center_to', 'change_widget_class', 'gbk', 'utf8', 'uni', 'uni8',
+		   'loadqss']
 
 
 class TrayMixIn(object):
 	def __init__(self, app, title, style=1):
 		self.app = app
 		self.title = title
-		self.style = style	# 0=使用最小化菜单项风格，1=使用灰字标题菜单项风格
+		self.style = style  # 0=使用最小化菜单项风格，1=使用灰字标题菜单项风格
 		# 初始化托盘图标
 		self.create_trayactions()
 		self.create_trayicon()
@@ -38,12 +38,12 @@ class TrayMixIn(object):
 	def create_trayactions(self):
 		self.actTitle = QtGui.QAction(self.title, self)
 		self.actTitle.setEnabled(False)
-		self.actMinimize = QtGui.QAction("最小化", self)
-		self.connect(self.actMinimize, QtCore.SIGNAL("triggered()"), QtCore.SLOT("hide()"))
-		self.actRestore = QtGui.QAction("显示窗体", self)
-		self.connect(self.actRestore, QtCore.SIGNAL("triggered()"), QtCore.SLOT("show()"))
-		self.actQuit = QtGui.QAction("退出", self)
-		self.connect(self.actQuit, QtCore.SIGNAL("triggered()"), self.on_actQuit_triggered)
+		self.actMinimize = QtGui.QAction('最小化', self)
+		self.connect(self.actMinimize, QtCore.SIGNAL('triggered()'), QtCore.SLOT('hide()'))
+		self.actRestore = QtGui.QAction('显示窗体', self)
+		self.connect(self.actRestore, QtCore.SIGNAL('triggered()'), QtCore.SLOT('show()'))
+		self.actQuit = QtGui.QAction('退出', self)
+		self.connect(self.actQuit, QtCore.SIGNAL('triggered()'), self.on_actQuit_triggered)
 
 	def create_trayicon(self):
 		self.mnuTray = QtGui.QMenu()
@@ -58,10 +58,10 @@ class TrayMixIn(object):
 
 		self.trayIcon = QtGui.QSystemTrayIcon(self)
 		self.trayIcon.setContextMenu(self.mnuTray)
-		self.connect(self.trayIcon, QtCore.SIGNAL("activated(QSystemTrayIcon::ActivationReason)"),
-			self.trayIconActivated)
+		self.connect(self.trayIcon, QtCore.SIGNAL('activated(QSystemTrayIcon::ActivationReason)'),
+					 self.trayIconActivated)
 
-		self.icon = QtGui.QIcon(":/images/images/icon.png")
+		self.icon = QtGui.QIcon(':/images/images/icon.png')
 		self.trayIcon.setIcon(self.icon)
 		self.trayIcon.setToolTip(self.windowTitle())
 		self.trayIcon.show()
@@ -90,12 +90,12 @@ class TrayMixIn(object):
 			self.raise_()
 			self.activateWindow()
 
-	@QtCore.pyqtSignature("")
+	@QtCore.pyqtSignature('')
 	def on_actQuit_triggered(self):
 		'''
 		菜单：退出
 		'''
-		if msgbox(self, "真的要退出吗？", title=self.title, question=True):
+		if msgbox(self, '真的要退出吗？', title=self.title, question=True):
 			self.quit()
 
 	def closeEvent(self, event):
@@ -108,7 +108,7 @@ class TrayMixIn(object):
 	def eventFilter(self, target, event):
 		if event.type() == QtCore.QEvent.WindowStateChange and self.isMinimized():
 			# 设置隐藏
-			QtCore.QTimer.singleShot(0, self, QtCore.SLOT("hide()"))
+			QtCore.QTimer.singleShot(0, self, QtCore.SLOT('hide()'))
 			return True
 
 		return self.eventFilter2(target, event)
@@ -121,18 +121,18 @@ class TrayMixIn(object):
 
 	def winEvent(self, msg):
 		if msg.message == UM_SHOW:
-			print "UM_SHOW"
+			print 'UM_SHOW'
 			self.show()
 			self.raise_()
 			self.activateWindow()
 		return False, 0
 
 	def quit(self, force=False):
-		self.trayIcon.setToolTip("正在退出...")
+		self.trayIcon.setToolTip('正在退出...')
 		self.hide()
 		self.trayIcon.hide()
 		if force:
-			win32process.ExitProcess(0)		# 强制退出，避免退出较慢的问题。
+			win32process.ExitProcess(0)  # 强制退出，避免退出较慢的问题。
 		self.app.exit()
 
 
@@ -142,17 +142,18 @@ class QssMixIn(object):
 	标题栏必须是一个命名为fraTitleBar的QFrame，其中有4个按钮btHelp、btMin、btMax、btClose。
 	隐藏btMax可以禁止缩放/最大化窗口。
 	'''
+
 	def __init__(self, app, qss_file):
 		self.app = app
 		self.qss_file = qss_file
 		self.qss_enabled = True
-		self.qss_encoding = "gbk"
+		self.qss_encoding = 'gbk'
 
 		# 初始化标题栏按钮提示
-		self.btHelp.setToolTip("帮助")
-		self.btMin.setToolTip("最小化")
-		self.btMax.setToolTip("最大化")
-		self.btClose.setToolTip("关闭")
+		self.btHelp.setToolTip('帮助')
+		self.btMin.setToolTip('最小化')
+		self.btMax.setToolTip('最大化')
+		self.btClose.setToolTip('关闭')
 		# 去除标题栏按钮的焦点
 		self.btHelp.setFocusPolicy(QtCore.Qt.NoFocus)
 		self.btMin.setFocusPolicy(QtCore.Qt.NoFocus)
@@ -160,20 +161,20 @@ class QssMixIn(object):
 		self.btClose.setFocusPolicy(QtCore.Qt.NoFocus)
 
 		# 挂接winEvent
-		self.prv_winEvent = getattr(self, "winEvent", None)
+		self.prv_winEvent = getattr(self, 'winEvent', None)
 		self.winEvent = self.qss_winEvent
 
 		# 挂接eventFilter
-		self.prv_eventFilter = getattr(self, "eventFilter", None)
+		self.prv_eventFilter = getattr(self, 'eventFilter', None)
 		self.eventFilter = self.qss_eventFilter
 		self.app.installEventFilter(self)
 
-	def qss_avalible(self, qss_file=""):
+	def qss_avalible(self, qss_file=''):
 		if not qss_file:
 			qss_file = self.qss_file
 		return os.path.isfile(qss_file)
 
-	def qss_apply_style(self, qss_file=""):
+	def qss_apply_style(self, qss_file=''):
 		if not qss_file:
 			qss_file = self.qss_file
 		if self.qss_avalible(qss_file):
@@ -182,22 +183,22 @@ class QssMixIn(object):
 				self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
 			QtGui.qApp.setStyleSheet(unicode(open(qss_file).read(), self.qss_encoding))
 
-	@QtCore.pyqtSignature("")
+	@QtCore.pyqtSignature('')
 	def on_btHelp_clicked(self):
 		self.qss_apply_style()
 
-	@QtCore.pyqtSignature("")
+	@QtCore.pyqtSignature('')
 	def on_btMin_clicked(self):
 		self.close()
 
-	@QtCore.pyqtSignature("")
+	@QtCore.pyqtSignature('')
 	def on_btMax_clicked(self):
-		if self.btMax.objectName() == "btMax":
+		if self.btMax.objectName() == 'btMax':
 			self.showMaximized()
 		else:
 			self.showNormal()
 
-	@QtCore.pyqtSignature("")
+	@QtCore.pyqtSignature('')
 	def on_btClose_clicked(self):
 		self.close()
 
@@ -221,7 +222,7 @@ class QssMixIn(object):
 				rect.setWidth(self.width())
 				# 判断标题栏区域时排除标题栏的按钮
 				if rect.contains(x, y) and \
-					not isinstance(self.childAt(x, y), QtGui.QPushButton):
+						not isinstance(self.childAt(x, y), QtGui.QPushButton):
 					# 如果窗口已经最大化，为避免被拖动，必须返回不在非客户区。
 					# 同时为了实现双击标题栏还原，需要处理 WM_LBUTTONDBLCLK。
 					if not self.isMaximized():
@@ -254,7 +255,7 @@ class QssMixIn(object):
 						rect.setWidth(self.width())
 						# 判断标题栏区域时排除标题栏的按钮
 						if rect.contains(x, y) and \
-							not isinstance(self.childAt(x, y), QtGui.QPushButton):
+								not isinstance(self.childAt(x, y), QtGui.QPushButton):
 							self.showNormal()
 							return True, 0
 
@@ -274,17 +275,17 @@ class QssMixIn(object):
 										   QtCore.Qt.KeyboardModifiers())
 					self.app.sendEvent(self.btMax, ev)
 					# 改变按钮样式（最大化->还原
-					self.btMax.setObjectName("btRestore")
+					self.btMax.setObjectName('btRestore')
 					self.btMax.style().unpolish(self.btMax)
 					self.btMax.style().polish(self.btMax)
-					self.btMax.setToolTip("还原")
+					self.btMax.setToolTip('还原')
 					self.btMax.update()
 				else:
 					# 改变按钮样式（还原->最大化）
-					self.btMax.setObjectName("btMax")
+					self.btMax.setObjectName('btMax')
 					self.btMax.style().unpolish(self.btMax)
 					self.btMax.style().polish(self.btMax)
-					self.btMax.setToolTip("最大化")
+					self.btMax.setToolTip('最大化')
 					self.btMax.update()
 				return True
 
@@ -296,18 +297,19 @@ class QssMixIn(object):
 class EmitCallMixIn(object):
 	'''
 	用于线程同步，在工作线程中需要以QT界面线程调用函数时使用。
-	self.emit_call(self.slot_button_clicked, "abc", 123)
+	self.emit_call(self.slot_button_clicked, 'abc', 123)
 	Qt的emit()方法并不支持字典参数，因此emit_call也不支持kwargs参数，
 	对于这种情况建议使用后面的ThreadingInvokeStubInMainThread代替。
 	'''
+
 	def __init__(self):
-		self.connect(self, QtCore.SIGNAL("emit_call"), self.emit_call_func)
+		self.connect(self, QtCore.SIGNAL('emit_call'), self.emit_call_func)
 
 	def emit_call(self, func, *args):
 		'''
 		emit()方法并不支持kwargs参数
 		'''
-		self.emit(QtCore.SIGNAL("emit_call"), func, *args)
+		self.emit(QtCore.SIGNAL('emit_call'), func, *args)
 
 	def emit_call_func(self, func, *args):
 		func(*args)
@@ -349,18 +351,18 @@ class ThreadingInvokeStubInMainThread(QtCore.QObject):
 	def __init__(self):
 		QtCore.QObject.__init__(self)
 
-	@QtCore.pyqtSlot("PyQt_PyObject", "PyQt_PyObject", "PyQt_PyObject", "PyQt_PyObject")
+	@QtCore.pyqtSlot('PyQt_PyObject', 'PyQt_PyObject', 'PyQt_PyObject', 'PyQt_PyObject')
 	def callMethod(self, resultObject, func, args, kwargs):
-		resultObject["value"] = func(*args, **kwargs)
+		resultObject['value'] = func(*args, **kwargs)
 
 	@staticmethod
 	def callMethodInMainThread(func, *args, **kwargs):
 		resultObject = {}
-		QtCore.QMetaObject.invokeMethod(threadingInvokeStubInMainThread, "callMethod",
-				QtCore.Qt.AutoConnection, QtCore.Q_ARG("PyQt_PyObject", resultObject),
-				QtCore.Q_ARG("PyQt_PyObject", func), QtCore.Q_ARG("PyQt_PyObject", args),
-				QtCore.Q_ARG("PyQt_PyObject", kwargs))
-		return resultObject.get("value")
+		QtCore.QMetaObject.invokeMethod(threadingInvokeStubInMainThread, 'callMethod',
+										QtCore.Qt.AutoConnection, QtCore.Q_ARG('PyQt_PyObject', resultObject),
+										QtCore.Q_ARG('PyQt_PyObject', func), QtCore.Q_ARG('PyQt_PyObject', args),
+										QtCore.Q_ARG('PyQt_PyObject', kwargs))
+		return resultObject.get('value')
 
 	@classmethod
 	def wrap(cls, func):
@@ -372,6 +374,7 @@ class ThreadingInvokeStubInMainThread(QtCore.QObject):
 		instance = functools.partial(callFromThread, func)
 		ThreadingInvokeStubInMainThread.instances.add(instance)
 		return instance
+
 
 threadingInvokeStubInMainThread = ThreadingInvokeStubInMainThread()
 
@@ -388,6 +391,7 @@ class RowHeightItemDelegateMixIn(object):
 	'''
 	用于调整QTreeView的行高不至于太小
 	'''
+
 	def sizeHint(self, option, index):
 		size = QtGui.QItemDelegate.sizeHint(self, option, index)
 		size.setHeight(size.height() + 6)
@@ -398,6 +402,7 @@ class HighlightFixItemDelegateMixIn(object):
 	'''
 	用于修正QTreeView选中行默认高亮会清除文字颜色的问题
 	'''
+
 	def paint(self, painter, option, index):
 		variant = index.data(QtCore.Qt.ForegroundRole)
 		if variant.isValid():
@@ -426,41 +431,41 @@ class QssMsgBox(QtGui.QMessageBox):
 		self.setText(text)
 		self.setIcon(QtGui.QMessageBox.Information)
 		self.setStandardButtons(QtGui.QMessageBox.Ok)
-		self.setButtonText(QtGui.QMessageBox.Ok, "确定")
+		self.setButtonText(QtGui.QMessageBox.Ok, '确定')
 		return self.exec_()
 
 	def warn(self, text):
 		self.setText(text)
 		self.setIcon(QtGui.QMessageBox.Warning)
 		self.setStandardButtons(QtGui.QMessageBox.Ok)
-		self.setButtonText(QtGui.QMessageBox.Ok, "确定")
+		self.setButtonText(QtGui.QMessageBox.Ok, '确定')
 		return self.exec_()
 
 	def question(self, text):
 		self.setText(text)
 		self.setIcon(QtGui.QMessageBox.Question)
 		self.setStandardButtons(QtGui.QMessageBox.Yes | QtGui.QMessageBox.No)
-		self.setButtonText(QtGui.QMessageBox.Yes, "是")
-		self.setButtonText(QtGui.QMessageBox.No, "否")
+		self.setButtonText(QtGui.QMessageBox.Yes, '是')
+		self.setButtonText(QtGui.QMessageBox.No, '否')
 		return self.exec_() == QtGui.QMessageBox.Yes
 
 	def __call__(self, parent, msg, *args, **kwargs):
 		'''
 		提供与msgbox()函数一致的接口
 		'''
-		title = kwargs.get("title")
+		title = kwargs.get('title')
 		if title is None:
-			title = getattr(self, "title", None)
+			title = getattr(self, 'title', None)
 		if title is None:
-			title = getattr(parent, "title", None)
+			title = getattr(parent, 'title', None)
 		if title is None:
-			func = getattr(parent, "windowTitle", None)
+			func = getattr(parent, 'windowTitle', None)
 			if func:
 				title = func()
 		if title is None:
-			title = "提示"
-		warning = kwargs.get("warning", False)
-		question = kwargs.get("question", False)
+			title = '提示'
+		warning = kwargs.get('warning', False)
+		question = kwargs.get('question', False)
 
 		if warning:
 			self.warn(msg)
@@ -483,10 +488,10 @@ class QssInputBox(QtGui.QInputDialog):
 	def __init__(self, qss):
 		QtGui.QInputDialog.__init__(self)
 		self.setStyleSheet(qss)
-		self.setFixedSize(200, 117)	# height不受控制
+		self.setFixedSize(200, 117)  # height不受控制
 		self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
-		self.setOkButtonText("确定")
-		self.setCancelButtonText("取消")
+		self.setOkButtonText('确定')
+		self.setCancelButtonText('取消')
 
 	def getInteger(self, parent, title, text, default, min_, max_, step):
 		val = None
@@ -524,7 +529,7 @@ class AnimationImgMixIn(object):
 		self._aim_interval = interval
 		self._aim_timer = QtCore.QTimer(self)
 		self._aim_idx = 0
-		QtGui.qApp.connect(self._aim_timer, QtCore.SIGNAL("timeout()"), self.on_aim_timeout)
+		QtGui.qApp.connect(self._aim_timer, QtCore.SIGNAL('timeout()'), self.on_aim_timeout)
 		self._aim_timer.start(interval)
 
 	def on_aim_timeout(self):
@@ -548,11 +553,11 @@ class QClickableLabel(QtGui.QLabel):
 			return
 		pt = ev.globalPos() - self.down_pos
 		if pt.manhattanLength() <= self.TOLERANCE:
-			self.emit(QtCore.SIGNAL("clicked"))
+			self.emit(QtCore.SIGNAL('clicked'))
 		self.down_pos = None
 
 	def click(self):
-		self.emit(QtCore.SIGNAL("clicked"))
+		self.emit(QtCore.SIGNAL('clicked'))
 
 	def paintEvent(self, ev):
 		'''
@@ -576,6 +581,8 @@ class QClickableLabel(QtGui.QLabel):
 		pt.setX((self.width() - pix_size.width()) / 2)
 		pt.setY((self.height() - pix_size.height()) / 2)
 		painter.drawPixmap(pt, self.pixmap())
+
+
 #		painter.drawRect(self.rect())
 
 
@@ -600,23 +607,23 @@ class QDoubleClickableLabel(QClickableLabel):
 				if tick - self.last_releasetime < self.dblclick_time:
 					if self.id_run:
 						self.killTimer(self.id_run)
-#					print "doubleClicked - %s" % self.objectName()
+#					print 'doubleClicked - %s' % self.objectName()
 					self.last_releasetime = 0
-					self.emit(QtCore.SIGNAL("doubleClicked"))
+					self.emit(QtCore.SIGNAL('doubleClicked'))
 			else:
 				self.id_run = self.startTimer(self.dblclick_time)
 				self.last_releasetime = tick
 
 #	def mouseDoubleClickEvent(self, ev):
-#		print "mouseDoubleClickEvent", ev.button()
+#		print 'mouseDoubleClickEvent', ev.button()
 
 	def timerEvent(self, ev):
 		if ev.timerId() == self.id_run:
-#			print "clicked - %s" % self.objectName()
+			#			print 'clicked - %s' % self.objectName()
 			self.last_releasetime = 0
 			self.killTimer(self.id_run)
 			self.id_run = None
-			self.emit(QtCore.SIGNAL("clicked"))
+			self.emit(QtCore.SIGNAL('clicked'))
 
 
 def GET_X_LPARAM(lParam):
@@ -655,48 +662,49 @@ def check_resize_pos(widget, x, y, bordersize=4):
 
 
 def msgbox(parent, msg, **kwargs):
-	# title = "", warning = False, question = False
-	title = kwargs.get("title")
+	# title = '', warning = False, question = False
+	title = kwargs.get('title')
 	if title is None:
-		title = getattr(msgbox, "title", None)
+		title = getattr(msgbox, 'title', None)
 	if title is None:
-		title = getattr(parent, "title", None)
+		title = getattr(parent, 'title', None)
 	if title is None:
-		func = getattr(parent, "windowTitle", None)
+		func = getattr(parent, 'windowTitle', None)
 		if func:
 			title = func()
 	if title is None:
-		title = "提示"
-	warning = kwargs.get("warning", False)
-	question = kwargs.get("question", False)
+		title = '提示'
+	warning = kwargs.get('warning', False)
+	question = kwargs.get('question', False)
 
 	if warning:
-		QtGui.QMessageBox.warning(parent, title, msg, "确定")
+		QtGui.QMessageBox.warning(parent, title, msg, '确定')
 	elif question:
-		reply = QtGui.QMessageBox.question(parent, title, msg, "是", "否")
+		reply = QtGui.QMessageBox.question(parent, title, msg, '是', '否')
 		if reply == 0:
 			return True
 	else:
-		QtGui.QMessageBox.information(parent, title, msg, "确定")
+		QtGui.QMessageBox.information(parent, title, msg, '确定')
 
 
-def inputbox(parent, label, default="", **kwargs):
-	# title = "", oktext = "确定", canceltext = "取消", inputmode = TextInput,
+def inputbox(parent, label, default='', **kwargs):
+	# title = '', oktext = '确定', canceltext = '取消', inputmode = TextInput,
 	# returndlg = False
-	title = kwargs.get("title")
+	title = kwargs.get('title')
 	if title is None:
-		title = getattr(parent, "title", None)
+		title = getattr(parent, 'title', None)
 	if title is None:
-		func = getattr(parent, "windowTitle", None)
+		func = getattr(parent, 'windowTitle', None)
 		if func:
 			title = func()
 	if title is None:
-		title = "提示"
+		title = '提示'
 
-	oktext = kwargs.get("oktext", "确定")
-	canceltext = kwargs.get("canceltext", "取消")
-	inputmode = kwargs.get("inputmode", QtGui.QInputDialog.TextInput)
-	returndlg = kwargs.get("returndlg", False)
+	oktext = kwargs.get('oktext', '确定')
+	canceltext = kwargs.get('canceltext', '取消')
+	inputmode = kwargs.get('inputmode', QtGui.QInputDialog.TextInput)
+	returndlg = kwargs.get('returndlg', False)
+	size = kwargs.get('size')
 
 	dlg = QtGui.QInputDialog(parent)
 	dlg.setWindowTitle(title)
@@ -710,9 +718,11 @@ def inputbox(parent, label, default="", **kwargs):
 		dlg.setDoubleValue(default)
 	dlg.setOkButtonText(oktext)
 	dlg.setCancelButtonText(canceltext)
+	if size is not None:
+		dlg.resize(*size)
 	if not returndlg:
 		if dlg.exec_():
-			s = str(dlg.textValue().toAscii())
+			s = dlg.textValue()
 			return s
 	else:
 		return dlg
@@ -749,7 +759,7 @@ def move_center(win, adjust_x=0, adjust_y=0):
 
 def move_rightbottom(win, adjust_x=0, adjust_y=0):
 	desktop = QtGui.qApp.desktop()
-	desktopRect = desktop.availableGeometry(desktop.primaryScreen())	# 排除了任务栏区域
+	desktopRect = desktop.availableGeometry(desktop.primaryScreen())  # 排除了任务栏区域
 	windowRect = QtCore.QRect(0, 0, win.width(), win.height())
 	windowRect.moveBottomRight(desktopRect.bottomRight())
 	windowRect.adjust(adjust_x, adjust_y, adjust_x, adjust_y)
@@ -778,40 +788,40 @@ def change_widget_class(widget, class_, visible=True):
 	return new_widget
 
 
-def gbk(u, encoding="utf-8"):
+def gbk(u, encoding='utf-8'):
 	'''
 	string convert (utf-8 -> gbk)
 	'''
-	if sip.getapi("QString") != 2:	# api=2时QString会自动变为str类型
+	if sip.getapi('QString') != 2:  # api=2时QString会自动变为str类型
 		if isinstance(u, QtCore.QString):
 			u = unicode(u)
 
 	if isinstance(u, unicode):
-		return u.encode("gbk")
-	elif encoding == "gbk":
+		return u.encode('gbk')
+	elif encoding == 'gbk':
 		return u
 	else:
-		return unicode(u, encoding).encode("gbk")
+		return unicode(u, encoding).encode('gbk')
 
 
-def utf8(u, encoding="gbk"):
+def utf8(u, encoding='gbk'):
 	'''
 	string convert (gbk -> utf-8)
 	'''
-	if sip.getapi("QString") != 2:	# api=2时QString会自动变为str类型
+	if sip.getapi('QString') != 2:  # api=2时QString会自动变为str类型
 		if isinstance(u, QtCore.QString):
 			u = unicode(u)
 
 	if isinstance(u, unicode):
-		return u.encode("utf-8")
-	elif encoding == "utf-8":
+		return u.encode('utf-8')
+	elif encoding == 'utf-8':
 		return u
 	else:
-		return unicode(u, encoding).encode("utf-8")
+		return unicode(u, encoding).encode('utf-8')
 
 
-def uni(s, encoding="gbk"):
-	if sip.getapi("QString") != 2:	# api=2时QString会自动变为str类型
+def uni(s, encoding='gbk'):
+	if sip.getapi('QString') != 2:  # api=2时QString会自动变为str类型
 		if isinstance(s, QtCore.QString):
 			s = unicode(s)
 
@@ -824,16 +834,16 @@ def uni(s, encoding="gbk"):
 
 
 def uni8(s):
-	return uni(s, encoding="utf-8")
+	return uni(s, encoding='utf-8')
 
 
-def loadqss(name, encoding="gbk"):
-	qssfile = "%s.qss" % name
+def loadqss(name, encoding='gbk'):
+	qssfile = '%s.qss' % name
 	if os.path.isfile(qssfile):
 		qssdata = unicode(open(qssfile).read(), encoding)
 	else:
-		f = QtCore.QFile(":/qss/%s.qss" % name)
-		f.open(QtCore.QFile.ReadOnly)	# 打开失败返回False，继续readAll()返回空QByteArray
+		f = QtCore.QFile(':/qss/%s.qss' % name)
+		f.open(QtCore.QFile.ReadOnly)  # 打开失败返回False，继续readAll()返回空QByteArray
 		qssdata = unicode(f.readAll(), encoding)
 	return qssdata
 
@@ -842,23 +852,23 @@ def __update__all__():
 	with open(__file__) as f:
 		exports = []
 		for line in f:
-			m = re.match(b"(?:def|class)\s+([^(]+)\(", line)
+			m = re.match(b'(?:def|class)\s+([^(]+)\(', line)
 			if not m:
 				# 匹配 std_date = isoformat_date 这样的全局重命名
-				m = re.match(b"([^\s]+) = .+", line)
+				m = re.match(b'([^\s]+) = .+', line)
 			if m:
 				item = m.group(1)
-				if not item.startswith("_"):
+				if not item.startswith('_'):
 					exports.append(item)
 		print exports
-	to = b"__all__ = %s" % exports
+	to = b'__all__ = %s' % exports
 	print to
 	before = open(__file__).read()
-	r = re.compile(b"^__all__\s*=\s*\[[^]]*]", re.M)
+	r = re.compile(b'^__all__\s*=\s*\[[^]]*]', re.M)
 	after = r.sub(to, before, 1)
 	if after != before:
-		open(__file__, "w").write(after)
+		open(__file__, 'w').write(after)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
 	__update__all__()
