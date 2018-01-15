@@ -12,19 +12,16 @@ from functools import partial
 
 from basis import ordered_dict
 
-__all__ = ['LockableDict', 'DictObj', 'OrderedDictObj', 'RepeatableTimer', 'QueueEx',
-	'format_frame', 'str2hex', 'lst2hex', 'mapord', 'mapchr', 'isoformat_date',
-	'isoformat_time', 'isoformat_datetime', 'std_date', 'std_time', 'std_datetime',
-	'decode_time', 'dhms', 'unescape_html', 'SafeDumper', 'print_', 'tr', 'getfileext',
-	'getfilebase', 'extractbaseext', 'changefileext', 'we_are_frozen', 'is_forking',
-	'module_path', 'module_file', 'extenddir', 'get_argv_param', 'load_table_file',
-	'dict_it_by_idx', 'val', 'defaultencoding', 'SYS_ENCODING', 'setdefaultencoding',
-	'nullfile', 'SYS_NULLFILE', 'get_fileversion', 'get_fileversioninfo',
-	'makesure_dirpathexists', 'redirectSystemStreamsIfNecessary', 'runas_admin',
-	'disable_deprecationwarnings', 'getconsolehwnd', 'wts_msgbox', 'msgbox',
-	'set_exit_handler', 'isdebugging', 'make_closure', 'flatten', 'chunk', 'urlencode_uni',
-	'decode_json', 'json_get', 'html_unescape', 'dget', 'dget_int', 'to_bytes',
-	'to_bytes_utf8', 'to_unicode', 'to_unicode_utf8']
+__all__ = ['LockableDict', 'DictObj', 'OrderedDictObj', 'RepeatableTimer', 'QueueEx', 'format_frame', 'str2hex',
+		   'lst2hex', 'mapord', 'mapchr', 'isoformat_date', 'isoformat_time', 'isoformat_datetime', 'std_date',
+		   'std_time', 'std_datetime', 'decode_time', 'dhms', 'unescape_html', 'SafeDumper', 'print_', 'tr',
+		   'getfileext', 'getfilebase', 'extractbaseext', 'changefileext', 'we_are_frozen', 'is_forking', 'module_path',
+		   'module_file', 'extenddir', 'get_argv_param', 'load_table_file', 'dict_it_by_idx', 'val', 'defaultencoding',
+		   'SYS_ENCODING', 'setdefaultencoding', 'nullfile', 'SYS_NULLFILE', 'get_fileversion', 'get_fileversioninfo',
+		   'makesure_dirpathexists', 'redirectSystemStreamsIfNecessary', 'runas_admin', 'disable_deprecationwarnings',
+		   'getconsolehwnd', 'wts_msgbox', 'msgbox', 'set_exit_handler', 'isdebugging', 'make_closure', 'flatten',
+		   'chunk', 'urlencode_uni', 'decode_json', 'json_get', 'html_unescape', 'd2s', 'dget', 'dget_int', 'to_bytes',
+		   'to_bytes_utf8', 'to_unicode', 'to_unicode_utf8']
 
 
 class LockableDict(dict):
@@ -39,6 +36,7 @@ class DictObj(dict):
 	'''
 	提取自webpy的utils模块中的Storage类
 	'''
+
 	def __getattr__(self, key):
 		'''
 		调用已存在的属性和方法不会触发__getattr__
@@ -65,6 +63,7 @@ class OrderedDictObj(ordered_dict.OrderedDict):
 	'''
 	一个保持数据插入顺序的DictObj类
 	'''
+
 	def __getattr__(self, key):
 		'''
 		调用已存在的属性和方法不会触发__getattr__
@@ -195,10 +194,10 @@ def decode_time(time_s):
 	@param time_s: "2013-03-28 11:22:33"
 	'''
 	try:
-		tm = time.strptime(time_s, "%Y-%m-%d %H:%M:%S")	# -> struct_time
-		result = time.mktime(tm)	# -> time_t
+		tm = time.strptime(time_s, "%Y-%m-%d %H:%M:%S")  # -> struct_time
+		result = time.mktime(tm)  # -> time_t
 	except:
-		result = time.mktime(time.localtime(0))	# -> 0.0
+		result = time.mktime(time.localtime(0))  # -> 0.0
 	return result
 
 
@@ -279,7 +278,7 @@ def print_(*args, **kwargs):
 	s = " ".join([str(a) for a in args])
 
 	# output to screen
-	#if echo:
+	# if echo:
 	if inline:
 		print s,
 	else:
@@ -356,7 +355,7 @@ def module_file(module_name='__main__', module=None):
 			import inspect
 			try:
 				result = inspect.getfile(module)
-			except TypeError:	# TypeError: <module '__main__' (built-in)> is a built-in module
+			except TypeError:  # TypeError: <module '__main__' (built-in)> is a built-in module
 				pass
 
 		if not result:
@@ -452,9 +451,9 @@ def get_fileversioninfo(filename):
 	"""
 	import win32api
 	propNames = ('Comments', 'InternalName', 'ProductName',
-		'CompanyName', 'LegalCopyright', 'ProductVersion',
-		'FileDescription', 'LegalTrademarks', 'PrivateBuild',
-		'FileVersion', 'OriginalFilename', 'SpecialBuild')
+				 'CompanyName', 'LegalCopyright', 'ProductVersion',
+				 'FileDescription', 'LegalTrademarks', 'PrivateBuild',
+				 'FileVersion', 'OriginalFilename', 'SpecialBuild')
 
 	props = {'FixedFileInfo': None, 'StringFileInfo': None, 'FileVersion': None}
 
@@ -462,8 +461,8 @@ def get_fileversioninfo(filename):
 	fixedInfo = win32api.GetFileVersionInfo(filename, '\\')
 	props['FixedFileInfo'] = fixedInfo
 	props['FileVersion'] = "%d.%d.%d.%d" % (fixedInfo['FileVersionMS'] / 65536,
-			fixedInfo['FileVersionMS'] % 65536, fixedInfo['FileVersionLS'] / 65536,
-			fixedInfo['FileVersionLS'] % 65536)
+											fixedInfo['FileVersionMS'] % 65536, fixedInfo['FileVersionLS'] / 65536,
+											fixedInfo['FileVersionLS'] % 65536)
 
 	# \VarFileInfo\Translation returns list of available (language, codepage)
 	# pairs that can be used to retreive string info. We are using only the first pair.
@@ -487,7 +486,7 @@ def makesure_dirpathexists(dir_or_path_or_file):
 		if "." not in file_:
 			dir_ = os.path.join(dir_, file_)
 		os.makedirs(dir_)
-	except:	# WindowsError: [Error 183] (路径已存在)
+	except:  # WindowsError: [Error 183] (路径已存在)
 		pass
 
 
@@ -524,7 +523,7 @@ def redirectSystemStreamsIfNecessary(stdout=None, stderr=None):
 		# of pywin32 except 200-202.  With 200-202, the redirection is a bit
 		# more conservative than is strictly necessary.
 		if servicemanager.Debugging() or \
-			(hasattr(servicemanager, 'RunningAsService') and not
+				(hasattr(servicemanager, 'RunningAsService') and not
 				servicemanager.RunningAsService()):
 			shouldRedirect = False
 
@@ -545,16 +544,16 @@ def runas_admin(exefile, param, workdir, showcmd=None):
 	import pywintypes
 	if showcmd is None:
 		showcmd = win32con.SW_SHOWDEFAULT
-	if platform.version() >= "6.0":	# Vista
+	if platform.version() >= "6.0":  # Vista
 		# pywintypes.error: (5, 'ShellExecute', '拒绝访问。')
 		try:
 			ret = win32api.ShellExecute(0, "runas", exefile, param, workdir, showcmd)
-		except pywintypes.error:	# @UndefinedVariable
+		except pywintypes.error:  # @UndefinedVariable
 			ret = -1
 	else:
 		try:
 			ret = win32api.ShellExecute(0, None, exefile, param, workdir, showcmd)
-		except pywintypes.error:	# @UndefinedVariable
+		except pywintypes.error:  # @UndefinedVariable
 			ret = -1
 	return ret > 32
 
@@ -575,7 +574,7 @@ def wts_msgbox(msg, title="提示", style=0, timeout=0, wait=False):
 	sid = win32ts.WTSGetActiveConsoleSessionId()
 	if sid != 0xffffffff:
 		ret = win32ts.WTSSendMessage(win32ts.WTS_CURRENT_SERVER_HANDLE,
-			sid, title, msg, style, timeout, wait)
+									 sid, title, msg, style, timeout, wait)
 		return ret
 
 
@@ -628,8 +627,10 @@ def make_closure(func, *args, **kwargs):
 	'''
 	Python2.5开始可使用functools.partial()代替此函数
 	'''
+
 	def __closeure():
 		func(*args, **kwargs)
+
 	return __closeure
 
 
@@ -698,10 +699,20 @@ def html_unescape(s):
 	return parser.unescape(s)
 
 
+def d2s(d, encoding='utf-8'):
+	"""
+	turns dict to human readable string.
+	:param d: dict
+	:param encoding: unicode decode encoding if there is a multi-bytes str.
+	:return: str | unicode
+	"""
+	return json.dumps(d, ensure_ascii=False, encoding=encoding)
+
+
 def dget(d, path, default=None, separator="/"):
 	if isinstance(path, basestring):
 		keys = path.split(separator)
-	else:	# iterable
+	else:  # iterable
 		keys = path
 	for key in keys:
 		d = d.get(key)
