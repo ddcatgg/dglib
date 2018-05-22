@@ -32,8 +32,8 @@ def get_fileencoding(filename, default=None, detail=None):
 		if not encoding:
 			# 使用BeautifulSoup的编码识别功能
 			f.seek(0)
-			content = f.read()
-			dammit = UnicodeDammit(content)
+			line = f.readline()
+			dammit = UnicodeDammit(line)
 			# 注意，这种方法有时获取到的编码是'windows-1252'（拉丁字符集的一种），因而不可靠。
 			encoding = dammit.original_encoding
 		f.close()
