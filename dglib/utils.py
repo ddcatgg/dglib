@@ -356,7 +356,7 @@ def module_file(module_name='__main__', module=None):
 			try:
 				result = inspect.getfile(module)
 			except TypeError:  # TypeError: <module '__main__' (built-in)> is a built-in module
-				pass
+				result = sys.argv[0]
 
 		if not result:
 			if sys._getframe().f_back:
