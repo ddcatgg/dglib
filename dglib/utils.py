@@ -645,7 +645,7 @@ def flatten(l):
 
 
 def chunk(seq, chunk_len):
-	return (seq[i:i + chunk_len] for i in range(0, len(seq), chunk_len))
+	return (seq[i:i + chunk_len] for i in xrange(0, len(seq), chunk_len))
 
 
 def urlencode_uni(us):
