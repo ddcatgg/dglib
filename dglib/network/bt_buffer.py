@@ -202,32 +202,32 @@ def test_performance():
 	print
 
 	stmt = """\
-	b.write("hello" * 10)
-	"""
+b.write("hello" * 10)
+"""
 	t = timeit.timeit(stmt=stmt, setup="from __main__ import Buffer; b = Buffer('hello' * 1000)", number=100000)
 	print "%.2f usec/pass" % (1000000 * t / 100000)
 
 	stmt = """\
-	b.append("hello" * 10)
-	"""
+b.append("hello" * 10)
+"""
 	t = timeit.timeit(stmt=stmt, setup="b = ['hello' * 1000]", number=100000)
 	print "%.2f usec/pass" % (1000000 * t / 100000)
 
 	stmt = """\
-	b.extend("hello" * 10)
-	"""
+b.extend("hello" * 10)
+"""
 	t = timeit.timeit(stmt=stmt, setup="b = bytearray('hello' * 1000)", number=100000)
 	print "%.2f usec/pass" % (1000000 * t / 100000)
 
 	stmt = """\
-	s += "hello" * 10
-	"""
+s += "hello" * 10
+"""
 	t = timeit.timeit(stmt=stmt, setup="s = 'hello' * 1000", number=100000)
 	print "%.2f usec/pass" % (1000000 * t / 100000)
 
 	stmt = """\
-	char_array.fromstring("hello" * 10)
-	"""
+char_array.fromstring("hello" * 10)
+"""
 	t = timeit.timeit(stmt=stmt, setup="from array import array; char_array = array('c')", number=100000)
 	print "%.2f usec/pass" % (1000000 * t / 100000)
 
