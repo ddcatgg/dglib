@@ -746,8 +746,10 @@ def _u(s, encoding=SYS_ENCODING, errors='replace'):
 		return s
 	elif isinstance(s, str):
 		return unicode(s, encoding, errors=errors)
-	else:
-		return unicode(s, errors=errors)
+	else:	# int, etc..
+		# Can't take keyword parameters, otherwise it will raise an error:
+		# 	TypeError: coercing to Unicode: need string or buffer, int found
+		return unicode(s)
 
 
 def _u8(s):
