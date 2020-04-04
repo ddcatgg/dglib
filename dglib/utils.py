@@ -33,14 +33,14 @@ class LockableDict(dict):
 
 
 class DictObj(dict):
-	'''
+	"""
 	提取自webpy的utils模块中的Storage类
-	'''
+	"""
 
 	def __getattr__(self, key):
-		'''
+		"""
 		调用已存在的属性和方法不会触发__getattr__
-		'''
+		"""
 		try:
 			return self[key]
 		except KeyError, k:
@@ -60,14 +60,14 @@ class DictObj(dict):
 
 
 class OrderedDictObj(ordered_dict.OrderedDict):
-	'''
+	"""
 	一个保持数据插入顺序的DictObj类
-	'''
+	"""
 
 	def __getattr__(self, key):
-		'''
+		"""
 		调用已存在的属性和方法不会触发__getattr__
-		'''
+		"""
 		if not key.startswith("_"):
 			try:
 				return self[key]
@@ -189,10 +189,10 @@ std_datetime = isoformat_datetime
 
 
 def decode_time(time_s):
-	'''
+	"""
 	日期时间字符串转换为time_t
 	@param time_s: "2013-03-28 11:22:33"
-	'''
+	"""
 	try:
 		tm = time.strptime(time_s, "%Y-%m-%d %H:%M:%S")  # -> struct_time
 		result = time.mktime(tm)  # -> time_t
@@ -624,9 +624,9 @@ def isdebugging():
 
 
 def make_closure(func, *args, **kwargs):
-	'''
+	"""
 	Python2.5开始可使用functools.partial()代替此函数
-	'''
+	"""
 
 	def __closeure():
 		func(*args, **kwargs)
@@ -649,10 +649,10 @@ def chunk(seq, chunk_len):
 
 
 def urlencode_uni(us):
-	'''
+	"""
 	将指定的unicode编码的URL转换成ASCII字符串，unicode汉字会编码为%AA%BB的格式。
 	如 urlencode_uni(u'cesi测试') 返回 'cesi%6D%4B%8B%D5'
-	'''
+	"""
 	l = []
 	for c in us:
 		n = ord(c)

@@ -27,10 +27,10 @@ class BlackHole(object):
 
 
 class CompositeFile(object):
-	'''
+	"""
 	复合文件对象，可通过add()方法加入多个文件对象一起输出。
 	如：.add(sys.sysout)
-	'''
+	"""
 	def __init__(self, filename="", mode="w", encoding="", nocache=False):
 		self.files = []
 		self.encoding = encoding
@@ -82,11 +82,11 @@ class SafeOutStream(object):
 
 
 class ScreenLogger(object):
-	'''
+	"""
 	可将屏幕输出的内容同时保存到一个日志文件。
 	用法：
 	sys.stdout = sys.stderr = ScreenLogger("日志文件名")
-	'''
+	"""
 	def __init__(self, filename="", encoding=None, append=False, showtime=False, logfile=None):
 		self.filename = filename
 		self.append = append
@@ -187,10 +187,10 @@ class Tracer(object):
 				return hdlr
 
 	def setlevel(self, levelname):
-		'''
+		"""
 		设置记录的等级，当大于等于这个级别才记录到日志。
 		例如：setlevel("WARNING")
-		'''
+		"""
 		level = logging.getLevelName(levelname.upper())
 		self.logger.setLevel(level)
 
@@ -257,9 +257,9 @@ class Tracer(object):
 		backup_count=30, max_bytes=0):
 
 		def translate(s):
-			'''
+			"""
 			转译所有不允许作为文件名的字符
-			'''
+			"""
 			table = {"\\": "╲",
 				"/": "∕",
 				":": "：",
@@ -305,9 +305,9 @@ DefaultTracer = Tracer
 
 
 class Tracer2(object):
-	'''
+	"""
 	利用extra参数扩展logger name，实现使用同一个logger记录不同对象的日志时能分出彼此。
-	'''
+	"""
 	def __init__(self, *args, **kwargs):
 		self.subtitle = kwargs.get("subtitle", "")
 		formatter = logging.Formatter("%(asctime)s %(name)s%(subtitle)s: %(message)s", "%H:%M:%S")
@@ -587,18 +587,18 @@ class DailyRotatingFileHandler(logging.handlers.BaseRotatingHandler):
 					pass
 
 	def handleError(self, record):
-		'''
+		"""
 		忽略磁盘满错误
-		'''
+		"""
 #		print "handleError"
 		pass
 
 
 class Utf8DailyRotatingFileHandler(DailyRotatingFileHandler):
-	'''
+	"""
 	使用DailyRotatingFileHandler类encoding设为utf8的时候发现文件被强制按ab模式写，
 	导致换行符变成UNIX的了。不得已重载此类解决。
-	'''
+	"""
 	def __init__(self, *args, **kwargs):
 		DailyRotatingFileHandler.__init__(self, *args, **kwargs)
 
@@ -820,11 +820,11 @@ def safe_coding(s, encoding=None, safe_stuff=None, errors='replace'):
 
 
 class Tester(object):
-	'''
+	"""
 	这个类用来测试Tracer类的资源泄露情况。
 	运行这个测试类时，进程的句柄数应该保持不变，
 	内存应该持续增加，因为传递给logging.getLogger()的名称不同，导致创建新的对象。
-	'''
+	"""
 	def __init__(self):
 		self.tracer = get_filetracer(self, subtitle=str(time.time()))
 		self.traceline("begin")
@@ -840,11 +840,11 @@ def test_leak():
 
 
 def test_leak2():
-	'''
+	"""
 	http://bugs.python.org/issue19523
 	当创建FileHandler时使用了delay=1参数但未记录数据，会导致close()无效造成Handler.lock句柄泄露。
 	目前DailyRotatingFileHandler类已通过重载close方法修正了这个问题。
-	'''
+	"""
 	while True:
 		filename = "test.log"
 		handler = logging.FileHandler(filename, mode="w", delay=1)
