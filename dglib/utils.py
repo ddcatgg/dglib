@@ -487,7 +487,8 @@ def makesure_dirpathexists(dir_or_path_or_file):
 			dir_ = os.path.join(dir_, file_)
 		os.makedirs(dir_)
 	except:  # WindowsError: [Error 183] (Â·¾¶ÒÑ´æÔÚ)
-		pass
+		return False
+	return True
 
 
 def redirectSystemStreamsIfNecessary(stdout=None, stderr=None):
