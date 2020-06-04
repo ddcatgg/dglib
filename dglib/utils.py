@@ -481,14 +481,16 @@ def get_fileversioninfo(filename):
 
 
 def makesure_dirpathexists(dir_or_path_or_file):
+	result = False
 	try:
 		dir_, file_ = os.path.split(dir_or_path_or_file)
 		if "." not in file_:
 			dir_ = os.path.join(dir_, file_)
 		os.makedirs(dir_)
+		result = True
 	except:  # WindowsError: [Error 183] (Â·¾¶ÒÑ´æÔÚ)
-		return False
-	return True
+		pass
+	return result
 
 
 def redirectSystemStreamsIfNecessary(stdout=None, stderr=None):
