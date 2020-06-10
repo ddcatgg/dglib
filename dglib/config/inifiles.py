@@ -28,19 +28,41 @@ class IniFile(RawConfigParser):
 			fp = open(filename)
 		except IOError:
 			return
+
+		if self._encoding == 'utf-8-sig':
+			# skip BOM
+			fp.read(3)
+
 		self.readfp(fp, filename)
 
 	def save(self, filename=None):
 		if not filename:
 			filename = self.filename
+
 		fp = open(filename, 'w')
+		if self._encoding == 'utf-8-sig':
+			# write BOM
+			fp.write(b'\xef\xbb\xbf')
+
 		self.write(fp)
+
+	def encode(self, text):
+		encoding = self._encoding
+		if encoding == 'utf-8-sig':
+			encoding = 'utf-8'
+		return text.encode(encoding)
+
+	def decode(self, bytes_):
+		encoding = self._encoding
+		if encoding == 'utf-8-sig':
+			encoding = 'utf-8'
+		return bytes_.decode(encoding)
 
 	def set(self, section, option, value=None):
 		if not self.has_section(section):
 			self.add_section(section)
 		if isinstance(value, unicode):
-			value = value.encode(self._encoding)
+			value = self.encode(value)
 		elif not isinstance(value, str):
 			value = str(value)
 		RawConfigParser.set(self, section, option, value)
@@ -88,26 +110,26 @@ class IniFile(RawConfigParser):
 	def write(self, fp):
 		"""Write an .ini-format representation of the configuration state."""
 
-		# unicode -> ascii
-		def toAsc(s):
-			return str(s) if not isinstance(s, unicode) else s.encode(self._encoding)
+		# unicode -> bytes
+		def toBytes(s):
+			return str(s) if not isinstance(s, unicode) else self.encode(s)
 
 		if self._defaults:
-			fp.write('[%s]\n' % toAsc(DEFAULTSECT))
+			fp.write('[%s]\n' % toBytes(DEFAULTSECT))
 			for (key, value) in self._defaults.items():
-				fp.write('%s = %s\n' % (toAsc(key), toAsc(value).replace('\n', '\n\t')))
+				fp.write('%s = %s\n' % (toBytes(key), toBytes(value).replace('\n', '\n\t')))
 			fp.write('\n')
 		for section in self._sections:
-			fp.write('[%s]\n' % toAsc(section))
+			fp.write('[%s]\n' % toBytes(section))
 			for (key, value) in self._sections[section].items():
 				if key == '__name__':
 					continue
 				if (value is not None) or (self._optcre == self.OPTCRE):
-					val = toAsc(value).replace('\n', '\n\t')
+					val = toBytes(value).replace('\n', '\n\t')
 					if self._compact:
-						line = '='.join((toAsc(key), val))
+						line = '='.join((toBytes(key), val))
 					else:
-						line = ' = '.join((toAsc(key), val))
+						line = ' = '.join((toBytes(key), val))
 				else:
 					line = key  # value is None and self._optcre == OPTCRE_NV
 				fp.write('%s\n' % line)
