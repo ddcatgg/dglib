@@ -36,7 +36,7 @@ class CompositeFile(object):
 		self.encoding = encoding
 		if filename:
 			if encoding:
-				codecs.open(filename, mode, encoding)
+				f = codecs.open(filename, mode, encoding)
 			else:
 				f = open(filename, mode)
 			self.files.append(f)
