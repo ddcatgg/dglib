@@ -3,10 +3,10 @@ import os
 import json
 import pickle
 import codecs
-import collections.abc
+from collections import Sequence
 from functools import wraps
 
-from dglib3.utils import makesure_dirpathexists
+from dglib.utils import makesure_dirpathexists
 
 FORMAT_JSON = 1
 FORMAT_PICKLE = 2
@@ -81,7 +81,7 @@ class FileCache(object):
             with open(filename, 'wb') as f:
                 return pickle.dump(cache, f, pickle.HIGHEST_PROTOCOL)
         elif cache_format == FORMAT_TXT:
-            if not (isinstance(cache, collections.abc.Sequence) and not isinstance(cache, (str, bytes))):
+            if not (isinstance(cache, Sequence) and not isinstance(cache, (str, bytes))):
                 raise TypeError('FORMAT_TXT can only apply to sequence types, but got %r' % type(cache))
             with codecs.open(filename, 'w', encoding='utf-8') as f:
                 return f.write('\r\n'.join(map(str, cache)))
