@@ -21,7 +21,7 @@ __all__ = ['LockableDict', 'DictObj', 'OrderedDictObj', 'RepeatableTimer', 'Queu
 		   'makesure_dirpathexists', 'redirectSystemStreamsIfNecessary', 'runas_admin', 'disable_deprecationwarnings',
 		   'getconsolehwnd', 'wts_msgbox', 'msgbox', 'set_exit_handler', 'isdebugging', 'make_closure', 'flatten',
 		   'chunk', 'urlencode_uni', 'decode_json', 'json_get', 'html_unescape', 'd2s', 'dget', 'dget_int', 'to_bytes',
-		   'to_bytes_utf8', 'to_unicode', 'to_unicode_utf8']
+		   'to_bytes_utf8', 'to_unicode', 'to_unicode_utf8', 'filename_add_tail']
 
 
 class LockableDict(dict):
