@@ -493,6 +493,11 @@ def makesure_dirpathexists(dir_or_path_or_file):
 	return result
 
 
+def filename_add_tail(filename, tail):
+	base, ext = os.path.splitext(filename)
+	return ''.join([base, tail, ext])
+
+
 def redirectSystemStreamsIfNecessary(stdout=None, stderr=None):
 	# Python programs running as Windows NT services must not send output to
 	# the default sys.stdout or sys.stderr streams, because those streams are
