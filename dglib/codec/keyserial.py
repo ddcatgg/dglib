@@ -41,7 +41,7 @@ def get_serial_by_mac():
 
 	if pnpd_ids:
 		pci_ids = filter(lambda s: s.startswith("PCI"), pnpd_ids)
-		mac_s = "|".join(pci_ids)
+		mac_s = "|".join(sorted(pci_ids))
 		md5_s = hashlib.md5(mac_s).hexdigest().upper()
 		return md5_to_serial(md5_s)
 
@@ -67,7 +67,7 @@ def get_serial_by_hdd():
 			hdd_ids.append(prop.value)
 
 	if hdd_ids:
-		hdd_s = "|".join(hdd_ids)
+		hdd_s = "|".join(sorted(hdd_ids))
 		md5_s = hashlib.md5(hdd_s).hexdigest().upper()
 		return md5_to_serial(md5_s)
 
