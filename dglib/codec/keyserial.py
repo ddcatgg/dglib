@@ -54,6 +54,14 @@ def get_serial_by_hdd():
 	c = wmi.WMI()
 	wql = "SELECT * FROM Win32_DiskDrive"
 	for entry in c.query(wql):
+		# 跳过U盘、可移动硬盘
+		try:
+			if (entry.wmi_property('InterfaceType').value == 'USB'
+					or 'removable' in entry.wmi_property('MediaType').value.lower()):
+				continue
+		except pywintypes.com_error:
+			pass
+
 		# 有的WD硬盘没有序列号，VirtualBox虚拟机里也没有这一项，就使用PNPDeviceID代替。
 		# 另外有的刀片服务器有SerialNumber这一栏，但取得的prop.value是None而不是字符串类型。
 		try:
