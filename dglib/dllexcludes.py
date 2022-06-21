@@ -22,4 +22,5 @@ dllexcludes = [
 	"profapi.dll",
 	"userenv.dll",
 	"w9xpopen.exe",
+    "crypt32.dll"
 ]
