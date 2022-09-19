@@ -90,14 +90,14 @@ class IniFile(RawConfigParser):
 
 	def getint(self, section, option, default=0):
 		value = self.get(section, option)
-		if value.isdigit():
+		if re.match(r'-?\d+$', value):
 			return int(value)
 		else:
 			return default
 
 	def getfloat(self, section, option, default=0.):
 		value = self.get(section, option)
-		if re.match(r'\d*?\.?\d+$', value):
+		if re.match(r'-?\d*?\.?\d+$', value):
 			return float(value)
 		else:
 			return default
