@@ -323,6 +323,16 @@ def we_are_frozen():
 	return hasattr(sys, "frozen")
 
 
+def isdebugging():
+	# http://stackoverflow.com/questions/333995/how-to-detect-that-python-code-is-being-executed-through-the-debugger/26605963
+	import inspect
+
+	for frame in inspect.stack():
+		if frame[1].endswith("pydevd.py"):
+			return True
+	return False
+
+
 def is_forking():
 	# 返回本进程是否是由multiprocessing产生的子进程
 	# 参考自 multiprocessing.forking.is_forking
@@ -619,16 +629,6 @@ def set_exit_handler(func):
 	else:
 		import signal
 		signal.signal(signal.SIGTERM, func)
-
-
-def isdebugging():
-	# http://stackoverflow.com/questions/333995/how-to-detect-that-python-code-is-being-executed-through-the-debugger/26605963
-	import inspect
-
-	for frame in inspect.stack():
-		if frame[1].endswith("pydevd.py"):
-			return True
-	return False
 
 
 def make_closure(func, *args, **kwargs):
